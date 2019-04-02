@@ -58,8 +58,6 @@ import junit.framework.TestCase;
 import libcore.io.IoUtils;
 
 import static android.system.OsConstants.*;
-import static libcore.android.system.OsTest.SendFileImpl.ANDROID_SYSTEM_OS_INT64_REF;
-import static libcore.android.system.OsTest.SendFileImpl.LIBCORE_OS;
 
 public class OsTest extends TestCase {
 
@@ -313,8 +311,7 @@ public class OsTest extends TestCase {
 
     /**
      * Expects that the given Runnable will throw an exception of the specified class. If the class
-     * is
-     * ErrnoException, and expectedErrno is non-null, also checks that the errno is equal to
+     * is ErrnoException, and expectedErrno is non-null, also checks that the errno is equal to
      * expectedErrno.
      */
     private static void expectException(ExceptionalRunnable r, Class<? extends Exception> exClass,
@@ -377,8 +374,8 @@ public class OsTest extends TestCase {
                 // Expect bind to succeed.
                 Os.bind(socket, addr);
 
-                // Find out which port we're actually bound to, and use that in subsequent connect() and
-                // send() calls. We can't send to addr because that has a port of 0.
+                // Find out which port we're actually bound to, and use that in subsequent connect()
+                // and send() calls. We can't send to addr because that has a port of 0.
                 if (addr instanceof InetSocketAddress) {
                     InetSocketAddress addrISA = (InetSocketAddress) addr;
                     InetSocketAddress socknameISA = (InetSocketAddress) Os.getsockname(socket);
@@ -389,11 +386,12 @@ public class OsTest extends TestCase {
                     addr = socknameISA;
                 }
 
-                // Expect sendto with a null address to throw because the socket is not connected, but to
-                // succeed with a non-null address.
+                // Expect sendto with a null address to throw because the socket is not connected,
+                // but to succeed with a non-null address.
                 byte[] packet = new byte[42];
                 Os.sendto(socket, packet, 0, packet.length, 0, addr);
-                // UNIX and IP sockets return different errors for this operation, so we can't check errno.
+                // UNIX and IP sockets return different errors for this operation, so we can't check
+                // errno.
                 expectSendtoException(socket, null, ErrnoException.class, null);
                 expectSendtoException(null, null, ErrnoException.class, EBADF);
 
@@ -419,9 +417,7 @@ public class OsTest extends TestCase {
     }
 
     private static void expectBindConnectSendtoErrno(int bindErrno, int connectErrno,
-            int sendtoErrno,
-            FileDescriptor socket, String socketDesc,
-            SocketAddress addr) {
+            int sendtoErrno, FileDescriptor socket, String socketDesc, SocketAddress addr) {
         try {
 
             // Expect bind to fail with bindErrno.
@@ -684,8 +680,8 @@ public class OsTest extends TestCase {
 
     public void test_Ipv4Fallback() throws Exception {
         // This number of iterations gives a ~60% chance of creating the conditions that caused
-        // http://b/23088314 without making test times too long. On a hammerhead running MRZ37C using
-        // vogar, this test takes about 4s.
+        // http://b/23088314 without making test times too long. On a hammerhead running MRZ37C
+        // using vogar, this test takes about 4s.
         final int ITERATIONS = 10000;
         for (int i = 0; i < ITERATIONS; i++) {
             FileDescriptor mUdpSock = Os.socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -1224,8 +1220,7 @@ public class OsTest extends TestCase {
         File in = createTempFile("test_sendfile_null", "Hello, world!");
         try {
             int len = "Hello".length();
-            assertEquals("Hello", checkSendfile(ANDROID_SYSTEM_OS_INT64_REF, in, null, len, null));
-            assertEquals("Hello", checkSendfile(LIBCORE_OS, in, null, len, null));
+            assertEquals("Hello", checkSendfile(in, null, len, null));
         } finally {
             in.delete();
         }
@@ -1235,56 +1230,26 @@ public class OsTest extends TestCase {
         File in = createTempFile("test_sendfile_offset", "Hello, world!");
         try {
             // checkSendfile(sendFileImplToUse, in, startOffset, maxBytes, expectedEndOffset)
-
-            assertEquals("Hello", checkSendfile(ANDROID_SYSTEM_OS_INT64_REF, in, 0L, 5, 5L));
-            assertEquals("Hello", checkSendfile(LIBCORE_OS, in, 0L, 5, 5L));
-
-            assertEquals("ello,", checkSendfile(ANDROID_SYSTEM_OS_INT64_REF, in, 1L, 5, 6L));
-            assertEquals("ello,", checkSendfile(LIBCORE_OS, in, 1L, 5, 6L));
-
+            assertEquals("Hello", checkSendfile(in, 0L, 5, 5L));
+            assertEquals("ello,", checkSendfile(in, 1L, 5, 6L));
             // At offset 9, only 4 bytes/chars available, even though we're asking for 5.
-            assertEquals("rld!", checkSendfile(ANDROID_SYSTEM_OS_INT64_REF, in, 9L, 5, 13L));
-            assertEquals("rld!", checkSendfile(LIBCORE_OS, in, 9L, 5, 13L));
-
-            assertEquals("", checkSendfile(ANDROID_SYSTEM_OS_INT64_REF, in, 1L, 0, 1L));
-            assertEquals("", checkSendfile(LIBCORE_OS, in, 1L, 0, 1L));
+            assertEquals("rld!", checkSendfile(in, 9L, 5, 13L));
+            assertEquals("", checkSendfile(in, 1L, 0, 1L));
         } finally {
             in.delete();
         }
     }
 
-    /** Which of the {@code sendfile()} implementations to use. */
-    enum SendFileImpl {
-        ANDROID_SYSTEM_OS_INT64_REF,
-        LIBCORE_OS
-    }
-
-    private static String checkSendfile(SendFileImpl sendFileImplToUse, File in, Long startOffset,
+    private static String checkSendfile(File in, Long startOffset,
             int maxBytes, Long expectedEndOffset) throws IOException, ErrnoException {
-        File out = File.createTempFile(OsTest.class.getSimpleName() + "_checkSendFile_" +
-                sendFileImplToUse, ".out");
+        File out = File.createTempFile(OsTest.class.getSimpleName() + "_checkSendFile", ".out");
         try (FileInputStream inStream = new FileInputStream(in)) {
             FileDescriptor inFd = inStream.getFD();
             try (FileOutputStream outStream = new FileOutputStream(out)) {
                 FileDescriptor outFd = outStream.getFD();
-                switch (sendFileImplToUse) {
-                    case ANDROID_SYSTEM_OS_INT64_REF: {
-                        Int64Ref offset = (startOffset == null) ? null : new Int64Ref(startOffset);
-                        android.system.Os.sendfile(outFd, inFd, offset, maxBytes);
-                        assertEquals(expectedEndOffset, offset == null ? null : offset.value);
-                        break;
-                    }
-                    case LIBCORE_OS: {
-                        Int64Ref offset = (startOffset == null) ? null : new Int64Ref(startOffset);
-                        libcore.io.Libcore.os.sendfile(outFd, inFd, offset, maxBytes);
-                        assertEquals(expectedEndOffset, offset == null ? null : offset.value);
-                        break;
-                    }
-                    default: {
-                        fail();
-                        break;
-                    }
-                }
+                Int64Ref offset = (startOffset == null) ? null : new Int64Ref(startOffset);
+                android.system.Os.sendfile(outFd, inFd, offset, maxBytes);
+                assertEquals(expectedEndOffset, offset == null ? null : offset.value);
             }
             return IoUtils.readFileAsString(out.getPath());
         } finally {
