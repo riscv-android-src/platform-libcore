@@ -486,6 +486,27 @@ java_library_static {
     system_modules: "core-all-system-modules",
 }
 
+// Builds platform_compat test rules
+java_library_static {
+    name: "platform_compat-test-rules",
+    visibility: ["//visibility:public"],
+    srcs: [
+        "luni/src/main/java/android/compat/**/*.java",
+        "test-rules/src/platform_compat/**/*.java",
+        "luni/src/main/java/libcore/api/CorePlatformApi.java",
+        "luni/src/main/java/libcore/api/IntraCoreApi.java",
+
+    ],
+    static_libs: [
+        "junit",
+        "guava",
+        "android-support-test",
+    ],
+    platform_apis: true,
+    // This builds classes that are in the java.base Java module:
+    patch_module: "java.base",
+}
+
 // Builds the core-tests-support library used by various tests.
 java_library_static {
     name: "core-tests-support",
@@ -733,15 +754,12 @@ droidstubs {
     java_version: "1.9",
     installable: false,
     sdk_version: "none",
+    system_modules: "none",
 }
 
 // A stubs target containing the parts of the public SDK API provided by the ART module.
 java_library {
     name: "art.module.public.api.stubs",
-    visibility: [
-        "//external/conscrypt",
-        "//external/icu/android_icu4j",
-    ],
     srcs: [":art-module-public-api-stubs-gen"],
     errorprone: {
         javacflags: [
@@ -834,6 +852,7 @@ droidstubs {
     srcs: [":art_module_api_files"],
     installable: false,
     sdk_version: "none",
+    system_modules: "none",
     annotations_enabled: true,
     args: "--hide-annotation libcore.api.Hide " +
         "--validate-nullability-from-merged-stubs ",
