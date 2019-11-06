@@ -212,8 +212,8 @@ public class FP16 {
         // Collapse NaNs, akin to halfToIntBits(), but we want to keep
         // (signed) short value types to preserve the ordering of -0.0
         // and +0.0
-        short xBits = (x & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY ? NaN : x;
-        short yBits = (y & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY ? NaN : y;
+        short xBits = isNaN(x) ? NaN : x;
+        short yBits = isNaN(y) ? NaN : y;
 
         return (xBits == yBits ? 0 : (xBits < yBits ? -1 : 1));
     }
@@ -237,16 +237,16 @@ public class FP16 {
     @libcore.api.CorePlatformApi
     public static short rint(short h) {
         int bits = h & 0xffff;
-        int e = bits & EXPONENT_SIGNIFICAND_MASK;
+        int abs = bits & EXPONENT_SIGNIFICAND_MASK;
         int result = bits;
 
-        if (e < 0x3c00) {
+        if (abs < 0x3c00) {
             result &= SIGN_MASK;
-            result |= (0x3c00 & (e >= 0x3800 ? 0xffff : 0x0));
-        } else if (e < 0x6400) {
-            e = 25 - (e >> 10);
-            int mask = (1 << e) - 1;
-            result += (1 << (e - 1));
+            result |= (0x3c00 & (abs >= 0x3800 ? 0xffff : 0x0));
+        } else if (abs < 0x6400) {
+            abs = 25 - (abs >> 10);
+            int mask = (1 << abs) - 1;
+            result += (1 << (abs - 1));
             result &= ~mask;
         }
 
@@ -272,15 +272,15 @@ public class FP16 {
     @libcore.api.CorePlatformApi
     public static short ceil(short h) {
         int bits = h & 0xffff;
-        int e = bits & EXPONENT_SIGNIFICAND_MASK;
+        int abs = bits & EXPONENT_SIGNIFICAND_MASK;
         int result = bits;
 
-        if (e < 0x3c00) {
+        if (abs < 0x3c00) {
             result &= SIGN_MASK;
-            result |= 0x3c00 & -(~(bits >> 15) & (e != 0 ? 1 : 0));
-        } else if (e < 0x6400) {
-            e = 25 - (e >> 10);
-            int mask = (1 << e) - 1;
+            result |= 0x3c00 & -(~(bits >> 15) & (abs != 0 ? 1 : 0));
+        } else if (abs < 0x6400) {
+            abs = 25 - (abs >> 10);
+            int mask = (1 << abs) - 1;
             result += mask & ((bits >> 15) - 1);
             result &= ~mask;
         }
@@ -307,17 +307,22 @@ public class FP16 {
     @libcore.api.CorePlatformApi
     public static short floor(short h) {
         int bits = h & 0xffff;
-        int e = bits & EXPONENT_SIGNIFICAND_MASK;
+        int abs = bits & EXPONENT_SIGNIFICAND_MASK;
         int result = bits;
 
-        if (e < 0x3c00) {
+        if (abs < 0x3c00) {
             result &= SIGN_MASK;
             result |= 0x3c00 & (bits > 0x8000 ? 0xffff : 0x0);
-        } else if (e < 0x6400) {
-            e = 25 - (e >> 10);
-            int mask = (1 << e) - 1;
+        } else if (abs < 0x6400) {
+            abs = 25 - (abs >> 10);
+            int mask = (1 << abs) - 1;
             result += mask & -(bits >> 15);
             result &= ~mask;
+        }
+        if (isNaN((short) result)) {
+            // if result is NaN mask with qNaN
+            // i.e. (Mask the most significant mantissa bit with 1)
+            result |= NaN;
         }
 
         return (short) result;
@@ -341,14 +346,14 @@ public class FP16 {
     @libcore.api.CorePlatformApi
     public static short trunc(short h) {
         int bits = h & 0xffff;
-        int e = bits & EXPONENT_SIGNIFICAND_MASK;
+        int abs = bits & EXPONENT_SIGNIFICAND_MASK;
         int result = bits;
 
-        if (e < 0x3c00) {
+        if (abs < 0x3c00) {
             result &= SIGN_MASK;
-        } else if (e < 0x6400) {
-            e = 25 - (e >> 10);
-            int mask = (1 << e) - 1;
+        } else if (abs < 0x6400) {
+            abs = 25 - (abs >> 10);
+            int mask = (1 << abs) - 1;
             result &= ~mask;
         }
 
@@ -369,8 +374,8 @@ public class FP16 {
      */
     @libcore.api.CorePlatformApi
     public static short min(short x, short y) {
-        if ((x & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return NaN;
-        if ((y & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return NaN;
+        if (isNaN(x)) return NaN;
+        if (isNaN(y)) return NaN;
 
         if ((x & EXPONENT_SIGNIFICAND_MASK) == 0 && (y & EXPONENT_SIGNIFICAND_MASK) == 0) {
             return (x & SIGN_MASK) != 0 ? x : y;
@@ -395,8 +400,8 @@ public class FP16 {
      */
     @libcore.api.CorePlatformApi
     public static short max(short x, short y) {
-        if ((x & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return NaN;
-        if ((y & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return NaN;
+        if (isNaN(x)) return NaN;
+        if (isNaN(y)) return NaN;
 
         if ((x & EXPONENT_SIGNIFICAND_MASK) == 0 && (y & EXPONENT_SIGNIFICAND_MASK) == 0) {
             return (x & SIGN_MASK) != 0 ? y : x;
@@ -418,8 +423,8 @@ public class FP16 {
      */
     @libcore.api.CorePlatformApi
     public static boolean less(short x, short y) {
-        if ((x & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
-        if ((y & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
+        if (isNaN(x)) return false;
+        if (isNaN(y)) return false;
 
         return ((x & SIGN_MASK) != 0 ? 0x8000 - (x & 0xffff) : x & 0xffff) <
                ((y & SIGN_MASK) != 0 ? 0x8000 - (y & 0xffff) : y & 0xffff);
@@ -437,8 +442,8 @@ public class FP16 {
      */
     @libcore.api.CorePlatformApi
     public static boolean lessEquals(short x, short y) {
-        if ((x & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
-        if ((y & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
+        if (isNaN(x)) return false;
+        if (isNaN(y)) return false;
 
         return ((x & SIGN_MASK) != 0 ? 0x8000 - (x & 0xffff) : x & 0xffff) <=
                ((y & SIGN_MASK) != 0 ? 0x8000 - (y & 0xffff) : y & 0xffff);
@@ -456,8 +461,8 @@ public class FP16 {
      */
     @libcore.api.CorePlatformApi
     public static boolean greater(short x, short y) {
-        if ((x & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
-        if ((y & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
+        if (isNaN(x)) return false;
+        if (isNaN(y)) return false;
 
         return ((x & SIGN_MASK) != 0 ? 0x8000 - (x & 0xffff) : x & 0xffff) >
                ((y & SIGN_MASK) != 0 ? 0x8000 - (y & 0xffff) : y & 0xffff);
@@ -475,8 +480,8 @@ public class FP16 {
      */
     @libcore.api.CorePlatformApi
     public static boolean greaterEquals(short x, short y) {
-        if ((x & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
-        if ((y & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
+        if (isNaN(x)) return false;
+        if (isNaN(y)) return false;
 
         return ((x & SIGN_MASK) != 0 ? 0x8000 - (x & 0xffff) : x & 0xffff) >=
                ((y & SIGN_MASK) != 0 ? 0x8000 - (y & 0xffff) : y & 0xffff);
@@ -494,8 +499,8 @@ public class FP16 {
      */
     @libcore.api.CorePlatformApi
     public static boolean equals(short x, short y) {
-        if ((x & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
-        if ((y & EXPONENT_SIGNIFICAND_MASK) > POSITIVE_INFINITY) return false;
+        if (isNaN(x)) return false;
+        if (isNaN(y)) return false;
 
         return x == y || ((x | y) & EXPONENT_SIGNIFICAND_MASK) == 0;
     }
@@ -626,30 +631,42 @@ public class FP16 {
         } else {
             e = e - FP32_EXPONENT_BIAS + EXPONENT_BIAS;
             if (e >= 0x1f) { // Overflow
-                outE = 0x31;
+                outE = 0x1f;
             } else if (e <= 0) { // Underflow
                 if (e < -10) {
                     // The absolute fp32 value is less than MIN_VALUE, flush to +/-0
                 } else {
                     // The fp32 value is a normalized float less than MIN_NORMAL,
                     // we convert to a denorm fp16
-                    m = (m | 0x800000) >> (1 - e);
-                    if ((m & 0x1000) != 0) m += 0x2000;
-                    outM = m >> 13;
+                    m = m | 0x800000;
+                    int shift = 14 - e;
+                    outM = m >> shift;
+
+                    int lowm = m & ((1 << shift) - 1);
+                    int hway = 1 << (shift - 1);
+                    // if above halfway or exactly halfway and outM is odd
+                    if (lowm + (outM & 1) > hway){
+                        // Round to nearest even
+                        // Can overflow into exponent bit, which surprisingly is OK.
+                        // This increment relies on the +outM in the return statement below
+                        outM++;
+                    }
                 }
             } else {
                 outE = e;
                 outM = m >> 13;
-                if ((m & 0x1000) != 0) {
-                    // Round to nearest "0.5" up
-                    int out = (outE << EXPONENT_SHIFT) | outM;
-                    out++;
-                    return (short) (out | (s << SIGN_SHIFT));
+                // if above halfway or exactly halfway and outM is odd
+                if ((m & 0x1fff) + (outM & 0x1) > 0x1000) {
+                    // Round to nearest even
+                    // Can overflow into exponent bit, which surprisingly is OK.
+                    // This increment relies on the +outM in the return statement below
+                    outM++;
                 }
             }
         }
-
-        return (short) ((s << SIGN_SHIFT) | (outE << EXPONENT_SHIFT) | outM);
+        // The outM is added here as the +1 increments for outM above can
+        // cause an overflow in the exponent bit which is OK.
+        return (short) ((s << SIGN_SHIFT) | (outE << EXPONENT_SHIFT) + outM);
     }
 
     /**

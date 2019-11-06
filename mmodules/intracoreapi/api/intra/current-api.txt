@@ -12,6 +12,7 @@ package android.compat {
     method public java.util.Set<java.lang.Long> forceDisabledSet();
     method public long[] forceEnabledChangesArray();
     method public java.util.Set<java.lang.Long> forceEnabledSet();
+    method public boolean isEmpty();
     method public boolean isForceDisabled(long);
     method public boolean isForceEnabled(long);
   }
@@ -46,6 +47,12 @@ package dalvik.annotation.compat {
     method @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public abstract dalvik.annotation.compat.UnsupportedAppUsage[] value();
   }
 
+  @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public class VersionCodes {
+    field @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public static final int O = 26; // 0x1a
+    field @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public static final int P = 28; // 0x1c
+    field @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public static final int Q = 29; // 0x1d
+  }
+
 }
 
 package dalvik.annotation.optimization {
@@ -72,18 +79,28 @@ package dalvik.system {
     method @dalvik.annotation.compat.UnsupportedAppUsage(trackingBug=111170242) @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public void warnIfOpen();
   }
 
-  @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public class VersionCodes {
-    field @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public static final int O = 26; // 0x1a
-    field @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public static final int P = 28; // 0x1c
-    field @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public static final int Q = 29; // 0x1d
-  }
-
 }
 
 package java.net {
 
   public class Socket implements java.io.Closeable {
     method public java.io.FileDescriptor getFileDescriptor$();
+  }
+
+}
+
+package java.nio.charset {
+
+  public abstract class Charset implements java.lang.Comparable<java.nio.charset.Charset> {
+    ctor @libcore.api.IntraCoreApi protected Charset(String, String[]);
+  }
+
+  public abstract class CharsetDecoder {
+    ctor protected CharsetDecoder(java.nio.charset.Charset, float, float);
+  }
+
+  public abstract class CharsetEncoder {
+    ctor protected CharsetEncoder(java.nio.charset.Charset, float, float, byte[], boolean);
   }
 
 }
@@ -109,7 +126,7 @@ package libcore.api {
 
 package libcore.icu {
 
-  @libcore.api.IntraCoreApi @libcore.api.CorePlatformApi public final class ICU {
+  @libcore.api.CorePlatformApi @libcore.api.IntraCoreApi public final class ICU {
     method @libcore.api.IntraCoreApi public static String getIcuVersion();
   }
 
