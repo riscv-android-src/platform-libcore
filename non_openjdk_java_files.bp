@@ -113,7 +113,7 @@ filegroup {
     name: "hidden_api_surface_annotation_files",
     srcs: [
         "dalvik/src/main/java/dalvik/annotation/compat/UnsupportedAppUsage.java",
-        "dalvik/src/main/java/dalvik/system/VersionCodes.java",
+        "dalvik/src/main/java/dalvik/annotation/compat/VersionCodes.java",
     ],
 }
 
@@ -176,10 +176,6 @@ filegroup {
         "luni/src/main/java/java/net/DefaultFileNameMap.java",
         "luni/src/main/java/java/nio/NIOAccess.java",
         "luni/src/main/java/java/nio/NioUtils.java",
-        "luni/src/main/java/java/nio/charset/CharsetDecoderICU.java",
-        "luni/src/main/java/java/nio/charset/CharsetEncoderICU.java",
-        "luni/src/main/java/java/nio/charset/CharsetICU.java",
-        "luni/src/main/java/java/nio/charset/ModifiedUtf8.java",
         "luni/src/main/java/javax/xml/XMLConstants.java",
         "luni/src/main/java/javax/xml/datatype/DatatypeConfigurationException.java",
         "luni/src/main/java/javax/xml/datatype/DatatypeConstants.java",
@@ -378,7 +374,6 @@ filegroup {
         "luni/src/main/java/libcore/icu/CollationKeyICU.java",
         "luni/src/main/java/libcore/icu/DateTimeFormat.java",
         "luni/src/main/java/libcore/icu/DateUtilsBridge.java",
-        "luni/src/main/java/libcore/icu/NativeConverter.java",
         "luni/src/main/java/libcore/internal/Java9LanguageFeatures.java",
         "luni/src/main/java/libcore/io/AsynchronousCloseMonitor.java",
         "luni/src/main/java/libcore/io/ClassPathURLStreamHandler.java",
@@ -405,8 +400,6 @@ filegroup {
         "luni/src/main/java/libcore/reflect/WildcardTypeImpl.java",
         "luni/src/main/java/libcore/util/CharsetUtils.java",
         "luni/src/main/java/libcore/util/CollectionUtils.java",
-        "luni/src/main/java/libcore/util/NonNull.java",
-        "luni/src/main/java/libcore/util/Nullable.java",
         "luni/src/main/java/libcore/util/NullFromTypeParam.java",
         "luni/src/main/java/libcore/util/Objects.java",
         "luni/src/main/java/org/apache/harmony/xml/ExpatAttributes.java",
