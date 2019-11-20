@@ -31,7 +31,6 @@ import libcore.util.BasicLruCache;
  * Makes ICU data accessible to Java.
  * @hide
  */
-@libcore.api.IntraCoreApi
 @libcore.api.CorePlatformApi
 public final class ICU {
 
@@ -267,10 +266,6 @@ public final class ICU {
     return availableLocalesCache.clone();
   }
 
-  public static Locale[] getAvailableCollatorLocales() {
-    return localesFromStrings(getAvailableCollatorLocalesNative());
-  }
-
   @UnsupportedAppUsage
   @libcore.api.CorePlatformApi
   public static String getBestDateTimePattern(String skeleton, Locale locale) {
@@ -332,68 +327,13 @@ public final class ICU {
     return result;
   }
 
-  /**
-   * Returns the version of the CLDR data in use, such as "22.1.1".
-   */
-  public static native String getCldrVersion();
-
-  /**
-   * Returns the icu4c version in use, such as "50.1.1".
-   */
-  @libcore.api.IntraCoreApi
-  public static native String getIcuVersion();
-
-  /**
-   * Returns the Unicode version our ICU supports, such as "6.2".
-   */
-  public static native String getUnicodeVersion();
-
-  // --- Case mapping.
-
-  public static String toLowerCase(String s, Locale locale) {
-    return toLowerCase(s, locale.toLanguageTag());
-  }
-
-  private static native String toLowerCase(String s, String languageTag);
-
-  public static String toUpperCase(String s, Locale locale) {
-    return toUpperCase(s, locale.toLanguageTag());
-  }
-
-  private static native String toUpperCase(String s, String languageTag);
-
   // --- Errors.
 
   // --- Native methods accessing ICU's database.
 
-  private static native String[] getAvailableCollatorLocalesNative();
   private static native String[] getAvailableLocalesNative();
 
   public static native String getCurrencyCode(String countryCode);
-
-  public static String getDisplayCountry(Locale targetLocale, Locale locale) {
-    return getDisplayCountryNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
-  }
-
-  private static native String getDisplayCountryNative(String targetLanguageTag, String languageTag);
-
-  public static String getDisplayLanguage(Locale targetLocale, Locale locale) {
-    return getDisplayLanguageNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
-  }
-
-  private static native String getDisplayLanguageNative(String targetLanguageTag, String languageTag);
-
-  public static String getDisplayVariant(Locale targetLocale, Locale locale) {
-    return getDisplayVariantNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
-  }
-
-  private static native String getDisplayVariantNative(String targetLanguageTag, String languageTag);
-
-  public static String getDisplayScript(Locale targetLocale, Locale locale) {
-    return getDisplayScriptNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
-  }
-
-  private static native String getDisplayScriptNative(String targetLanguageTag, String languageTag);
 
   public static native String getISO3Country(String languageTag);
 
@@ -434,8 +374,4 @@ public final class ICU {
    * Returns a locale name, not a BCP-47 language tag. e.g. en_US not en-US.
    */
   public static native String getDefaultLocale();
-
-  /** Returns the TZData version as reported by ICU4C. */
-  @libcore.api.CorePlatformApi
-  public static native String getTZDataVersion();
 }

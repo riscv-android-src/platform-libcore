@@ -208,6 +208,7 @@ java_library {
         ":core_libart_java_files",
         ":openjdk_lambda_stub_files",
         ":openjdk_generated_annotation_stub_files",
+        ":app-compat-annotations-source",
     ],
 
     sdk_version: "none",
@@ -491,23 +492,25 @@ java_library_static {
 
 // Builds platform_compat test rules
 java_library_static {
-    name: "platform_compat-test-rules",
-    visibility: ["//visibility:public"],
+    name: "core-compat-test-rules",
+    visibility: [
+        "//frameworks/base/tests/PlatformCompatGating/test-rules",
+    ],
     srcs: [
         "luni/src/main/java/android/compat/**/*.java",
         "test-rules/src/platform_compat/**/*.java",
         "luni/src/main/java/libcore/api/CorePlatformApi.java",
         "luni/src/main/java/libcore/api/IntraCoreApi.java",
-
     ],
     static_libs: [
         "junit",
         "guava",
-        "android-support-test",
     ],
-    platform_apis: true,
+    sdk_version: "none",
+    system_modules: "core-all-system-modules",
     // This builds classes that are in the java.base Java module:
     patch_module: "java.base",
+    hostdex: true,
 }
 
 // Builds the core-tests-support library used by various tests.
@@ -605,6 +608,7 @@ java_test {
 
     static_libs: [
         "archive-patcher",
+        "core-compat-test-rules",
         "core-java-9-language-tests",
         "core-test-rules",
         "core-tests-support",
@@ -710,9 +714,6 @@ java_test {
 // available to metalava. Used for nullability annotations in OpenJDK source.
 droiddoc_exported_dir {
     name: "ojluni-annotated-sdk-stubs",
-    visibility: [
-        "//frameworks/base",
-    ],
     path: "ojluni/annotations/sdk",
 }
 
@@ -794,6 +795,21 @@ java_system_modules {
     ],
 }
 
+// http://b/129765390 Rewrite links to "platform" or "technotes" folders
+// which are siblings (and thus outside of) {@docRoot}.
+//
+// We have to escape \ as \\ and $ as $$ here because they get resolved by
+// different layers of the build tooling. The arguments are wrapped in '' so
+// that the shell doesn't add yet another level of escaping.
+rewrite_openjdk_doc_args = "--replace-documentation " +
+    // packages whose descendants to apply replacement to (all packages from
+    // libcore/ojluni/src/main/java that contribute to documentation).
+    "com.sun:java:javax:jdk.net:sun " +
+    // regex of the string to replace
+    "'(<a\\s+href\\s?=[\\*\\s]*\")(?:(?:\\{@docRoot\\}/\\.\\./)|(?:(?:\\.\\./)+))((?:platform|technotes).+)\">' " +
+    // replacement (with $1, $2 backreferences to the regex groups)
+    "'$$1https://docs.oracle.com/javase/8/docs/$$2\">' "
+
 // Generates stubs for the parts of the public SDK API provided by the ART module.
 //
 // Only for use by art.module.public.api.stubs target below.
@@ -815,10 +831,16 @@ droidstubs {
         "i18n.module.intra.core.api.stubs",
     ],
 
+    args: rewrite_openjdk_doc_args,
+
     create_doc_stubs: true,
 
     // Emit nullability annotations from the source to the stub files.
-    args: "--include-annotations",
+    annotations_enabled: true,
+
+    merge_annotations_dirs: [
+        "ojluni-annotated-sdk-stubs",
+    ],
 }
 
 // A stubs target containing the parts of the public SDK API provided by the ART module.
@@ -928,7 +950,6 @@ droidstubs {
         "--validate-nullability-from-merged-stubs ",
     merge_inclusion_annotations_dirs: ["ojluni-annotated-mmodule-stubs"],
     merge_annotations_dirs: [
-        "metalava-manual",
         // N.B. Stubs in this filegroup will be validated:
         "ojluni-annotated-nullability-stubs",
     ],
