@@ -16,7 +16,9 @@
 
 package libcore.icu;
 
-import dalvik.annotation.compat.UnsupportedAppUsage;
+import android.compat.annotation.UnsupportedAppUsage;
+import android.icu.util.ULocale;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -339,18 +341,26 @@ public final class ICU {
 
   public static native String getISO3Language(String languageTag);
 
-  @UnsupportedAppUsage
-  @libcore.api.CorePlatformApi
-  public static Locale addLikelySubtags(Locale locale) {
-      return Locale.forLanguageTag(addLikelySubtags(locale.toLanguageTag()).replace('_', '-'));
-  }
-
   /**
-   * @deprecated use {@link #addLikelySubtags(java.util.Locale)} instead.
+   * @deprecated Use {@link android.icu.util.ULocale#addLikelySubtags(ULocale)} instead.
+   * The method is only kept for @UnsupportedAppUsage.
    */
   @UnsupportedAppUsage
   @Deprecated
-  public static native String addLikelySubtags(String locale);
+  public static Locale addLikelySubtags(Locale locale) {
+      return ULocale.addLikelySubtags(ULocale.forLocale(locale)).toLocale();
+  }
+
+  /**
+   * @return ICU localeID
+   * @deprecated Use {@link android.icu.util.ULocale#addLikelySubtags(ULocale)} instead.
+   * The method is only kept for @UnsupportedAppUsage.
+   */
+  @UnsupportedAppUsage
+  @Deprecated
+  public static String addLikelySubtags(String locale) {
+      return ULocale.addLikelySubtags(new ULocale(locale)).getName();
+  }
 
   /**
    * @deprecated use {@link java.util.Locale#getScript()} instead. This has been kept
