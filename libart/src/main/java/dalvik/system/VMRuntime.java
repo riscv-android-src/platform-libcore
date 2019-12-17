@@ -16,13 +16,15 @@
 
 package dalvik.system;
 
-import dalvik.annotation.compat.UnsupportedAppUsage;
-import dalvik.annotation.optimization.FastNative;
+import android.compat.annotation.UnsupportedAppUsage;
+
 import java.lang.ref.FinalizerReference;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+
+import dalvik.annotation.optimization.FastNative;
 
 /**
  * Provides an interface to VM-global, Dalvik-specific features.
@@ -148,6 +150,8 @@ public final class VMRuntime {
 
     // Allocations since last call to native layer. See notifyNativeAllocation().
     private final AtomicInteger allocationCount = new AtomicInteger(0);
+
+    private long[] disabledCompatChanges = new long[0];
 
     /**
      * Prevents this class from being instantiated.
@@ -281,6 +285,18 @@ public final class VMRuntime {
         setTargetSdkVersionNative(this.targetSdkVersion);
     }
 
+
+    /**
+     * Sets the disabled compat changes. Should only be called before the
+     * app starts to run, because it may change the VM's behavior in
+     * dangerous ways. Defaults to empty.
+     */
+    @libcore.api.CorePlatformApi
+    public synchronized void setDisabledCompatChanges(long[] disabledCompatChanges) {
+        this.disabledCompatChanges = disabledCompatChanges;
+        setDisabledCompatChangesNative(this.disabledCompatChanges);
+    }
+
     /**
      * Gets the target SDK version. See {@link #setTargetSdkVersion} for
      * special values.
@@ -291,6 +307,7 @@ public final class VMRuntime {
     }
 
     private native void setTargetSdkVersionNative(int targetSdkVersion);
+    private native void setDisabledCompatChangesNative(long[] disabledCompatChanges);
 
     /**
      * This method exists for binary compatibility.  It was part of a
@@ -656,6 +673,14 @@ public final class VMRuntime {
      */
     @libcore.api.CorePlatformApi
     public static native void bootCompleted();
+
+    /**
+     * Used to notify the runtime to reset Jit counters. This is done for the boot image
+     * profiling configuration to avoid samples during class preloading. This helps avoid
+     * the regression from disabling class profiling.
+     */
+    @libcore.api.CorePlatformApi
+    public static native void resetJitCounters();
 
     /**
      * Returns the instruction set of the current runtime.
