@@ -87,6 +87,45 @@ public class OsTest extends TestCase {
         }
     }
 
+    public void testFcntlInt_udpSocket() throws Exception {
+        final FileDescriptor fd = Os.socket(AF_INET, SOCK_DGRAM, 0);
+        try {
+            assertEquals(0, (Os.fcntlVoid(fd, F_GETFL) & O_NONBLOCK));
+
+            // Verify that we can set file descriptor flags on sockets
+            Os.fcntlInt(fd, F_SETFL, SOCK_DGRAM | O_NONBLOCK);
+            assertTrue((Os.fcntlVoid(fd, F_GETFL) & O_NONBLOCK) != 0);
+
+            // Check that we can turn it off also.
+            Os.fcntlInt(fd, F_SETFL, SOCK_DGRAM);
+            assertEquals(0, (Os.fcntlVoid(fd, F_GETFL) & O_NONBLOCK));
+        } finally {
+            Os.close(fd);
+        }
+    }
+
+    public void testFcntlInt_invalidCmd() throws Exception {
+        final FileDescriptor fd = Os.socket(AF_INET, SOCK_DGRAM, 0);
+        try {
+            final int unknownCmd = -1;
+            Os.fcntlInt(fd, unknownCmd, 0);
+            fail("Expected failure due to invalid cmd");
+        } catch (ErrnoException expected) {
+            assertEquals(EINVAL, expected.errno);
+        } finally {
+            Os.close(fd);
+        }
+    }
+
+    public void testFcntlInt_nullFd() throws Exception {
+        try {
+            Os.fcntlInt(null, F_SETFL, O_NONBLOCK);
+            fail("Expected failure due to null file descriptor");
+        } catch (ErrnoException expected) {
+            assertEquals(EBADF, expected.errno);
+        }
+    }
+
     public void testUnixDomainSockets_in_file_system() throws Exception {
         String path = System.getProperty("java.io.tmpdir") + "/test_unix_socket";
         new File(path).delete();
@@ -538,10 +577,14 @@ public class OsTest extends TestCase {
 
     public void test_NetlinkSocket() throws Exception {
         FileDescriptor nlSocket = Os.socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
-        Os.bind(nlSocket, new NetlinkSocketAddress());
-        NetlinkSocketAddress address = (NetlinkSocketAddress) Os.getsockname(nlSocket);
-        assertTrue(address.getPortId() > 0);
-        assertEquals(0, address.getGroupsMask());
+        try {
+            Os.bind(nlSocket, new NetlinkSocketAddress());
+            // Non-system processes should not be allowed to bind() to NETLINK_ROUTE sockets.
+            // http://b/141455849
+            fail("bind() on NETLINK_ROUTE socket succeeded");
+        } catch (ErrnoException expectedException) {
+            assertEquals(expectedException.errno, EACCES);
+        }
 
         NetlinkSocketAddress nlKernel = new NetlinkSocketAddress();
         Os.connect(nlSocket, nlKernel);
@@ -941,7 +984,7 @@ public class OsTest extends TestCase {
 
         // ENOTSUP, Extended attributes are not supported by the filesystem, or are disabled.
         // Since kernel version 4.9 (or some other version after 4.4), *xattr() methods
-        // may set errno to EACCESS instead. This behavior change is likely related to
+        // may set errno to EACCES instead. This behavior change is likely related to
         // https://patchwork.kernel.org/patch/9294421/ which reimplemented getxattr, setxattr,
         // and removexattr on top of generic handlers.
         final String path = "/proc/self/stat";

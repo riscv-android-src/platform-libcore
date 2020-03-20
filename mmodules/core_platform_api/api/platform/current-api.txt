@@ -44,7 +44,6 @@ package android.system {
   public final class Os {
     method public static android.system.StructCapUserData[] capget(android.system.StructCapUserHeader) throws android.system.ErrnoException;
     method public static void capset(android.system.StructCapUserHeader, android.system.StructCapUserData[]) throws android.system.ErrnoException;
-    method public static int fcntlInt(java.io.FileDescriptor, int, int) throws android.system.ErrnoException;
     method public static int getpgid(int) throws android.system.ErrnoException;
     method public static android.system.StructRlimit getrlimit(int) throws android.system.ErrnoException;
     method public static int getsockoptInt(java.io.FileDescriptor, int, int) throws android.system.ErrnoException;
@@ -502,19 +501,6 @@ package dalvik.annotation.codegen {
 
 package dalvik.annotation.compat {
 
-  @java.lang.annotation.Repeatable(UnsupportedAppUsage.Container.class) @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.CLASS) @java.lang.annotation.Target({java.lang.annotation.ElementType.CONSTRUCTOR, java.lang.annotation.ElementType.METHOD, java.lang.annotation.ElementType.FIELD, java.lang.annotation.ElementType.TYPE}) public @interface UnsupportedAppUsage {
-    method public abstract String expectedSignature() default "";
-    method public abstract String implicitMember() default "";
-    method public abstract int maxTargetSdk() default java.lang.Integer.MAX_VALUE;
-    method public abstract String overrideSourcePosition() default "";
-    method public abstract String publicAlternatives() default "";
-    method public abstract long trackingBug() default 0;
-  }
-
-  @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.CLASS) @java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE) public static @interface UnsupportedAppUsage.Container {
-    method public abstract dalvik.annotation.compat.UnsupportedAppUsage[] value();
-  }
-
   public class VersionCodes {
     field public static final int O = 26; // 0x1a
     field public static final int P = 28; // 0x1c
@@ -549,7 +535,7 @@ package dalvik.system {
   }
 
   public static interface BaseDexClassLoader.Reporter {
-    method public void report(java.util.List<java.lang.ClassLoader>, java.util.List<java.lang.String>);
+    method public void report(java.util.Map<java.lang.String,java.lang.String>);
   }
 
   public final class BlockGuard {
@@ -627,6 +613,8 @@ package dalvik.system {
   }
 
   public final class RuntimeHooks {
+    method @Nullable public static dalvik.system.ThreadPrioritySetter getThreadPrioritySetter();
+    method public static void setThreadPrioritySetter(@NonNull dalvik.system.ThreadPrioritySetter);
     method public static void setTimeZoneIdSupplier(java.util.function.Supplier<java.lang.String>);
     method public static void setUncaughtExceptionPreHandler(java.lang.Thread.UncaughtExceptionHandler);
   }
@@ -641,6 +629,10 @@ package dalvik.system {
     method public abstract void untag(java.io.FileDescriptor) throws java.net.SocketException;
     method public final void untag(java.net.Socket) throws java.net.SocketException;
     method public final void untag(java.net.DatagramSocket) throws java.net.SocketException;
+  }
+
+  @java.lang.FunctionalInterface public interface ThreadPrioritySetter {
+    method public void setPriority(int, int);
   }
 
   public final class VMDebug {
@@ -706,6 +698,7 @@ package dalvik.system {
     method public static boolean isBootClassPathOnDisk(String);
     method @dalvik.annotation.optimization.FastNative public boolean isCheckJniEnabled();
     method @dalvik.annotation.optimization.FastNative public boolean isNativeDebuggable();
+    method public static boolean isValidClassLoaderContext(String);
     method @dalvik.annotation.optimization.FastNative public Object newNonMovableArray(Class<?>, int);
     method @dalvik.annotation.optimization.FastNative public Object newUnpaddedArray(Class<?>, int);
     method public void notifyStartupCompleted();
@@ -857,6 +850,11 @@ package java.nio {
     method public final void setAccessible(boolean);
   }
 
+  public final class NIOAccess {
+    method public static Object getBaseArray(java.nio.Buffer);
+    method public static int getBaseArrayOffset(java.nio.Buffer);
+  }
+
   public final class NioUtils {
     method public static void freeDirectBuffer(java.nio.ByteBuffer);
     method public static byte[] unsafeArray(java.nio.ByteBuffer);
@@ -926,6 +924,14 @@ package javax.crypto {
 
 }
 
+package javax.net.ssl {
+
+  public abstract class HttpsURLConnection extends java.net.HttpURLConnection {
+    method public static javax.net.ssl.HostnameVerifier getStrictHostnameVerifier();
+  }
+
+}
+
 package libcore.content.type {
 
   public final class MimeMap {
@@ -982,8 +988,6 @@ package libcore.icu {
     field public String[] tinyStandAloneMonthNames;
     field public String[] tinyStandAloneWeekdayNames;
     field public String[] tinyWeekdayNames;
-    field public String today;
-    field public String yesterday;
     field public char zeroDigit;
   }
 
@@ -1098,26 +1102,27 @@ package libcore.timezone {
   public final class CountryTimeZones {
     method public String getCountryIso();
     method public android.icu.util.TimeZone getDefaultTimeZone();
-    method public boolean getDefaultTimeZoneBoost();
     method public String getDefaultTimeZoneId();
     method public java.util.List<libcore.timezone.CountryTimeZones.TimeZoneMapping> getEffectiveTimeZoneMappingsAt(long);
     method public java.util.List<libcore.timezone.CountryTimeZones.TimeZoneMapping> getTimeZoneMappings();
     method public boolean hasUtcZone(long);
-    method public boolean isForCountryCode(String);
-    method public libcore.timezone.CountryTimeZones.OffsetResult lookupByOffsetWithBias(int, Boolean, Integer, long, android.icu.util.TimeZone);
+    method public boolean isDefaultTimeZoneBoosted();
+    method public libcore.timezone.CountryTimeZones.OffsetResult lookupByOffsetWithBias(long, android.icu.util.TimeZone, int, boolean);
+    method public libcore.timezone.CountryTimeZones.OffsetResult lookupByOffsetWithBias(long, android.icu.util.TimeZone, int);
+    method public boolean matchesCountryCode(String);
   }
 
   public static final class CountryTimeZones.OffsetResult {
-    field public final boolean mOneMatch;
-    field public final android.icu.util.TimeZone mTimeZone;
+    method public android.icu.util.TimeZone getTimeZone();
+    method public boolean isOnlyMatch();
   }
 
   public static final class CountryTimeZones.TimeZoneMapping {
     method public static libcore.timezone.CountryTimeZones.TimeZoneMapping createForTests(String, boolean, Long);
+    method public Long getNotUsedAfter();
     method public android.icu.util.TimeZone getTimeZone();
-    field public final Long notUsedAfter;
-    field public final boolean showInPicker;
-    field public final String timeZoneId;
+    method public String getTimeZoneId();
+    method public boolean isShownInPicker();
   }
 
   public final class CountryZonesFinder {
@@ -1133,13 +1138,13 @@ package libcore.timezone {
     method public void validate() throws java.io.IOException;
   }
 
-  public class TelephonyNetwork {
+  public final class TelephonyNetwork {
     method public String getCountryIsoCode();
     method public String getMcc();
     method public String getMnc();
   }
 
-  public class TelephonyNetworkFinder {
+  public final class TelephonyNetworkFinder {
     method public libcore.timezone.TelephonyNetwork findNetworkByMccMnc(String, String);
   }
 
@@ -1158,15 +1163,19 @@ package libcore.timezone {
     method public void validate() throws java.io.IOException;
   }
 
-  public class TzDataSetVersion {
+  public final class TzDataSetVersion {
     ctor public TzDataSetVersion(int, int, String, int) throws libcore.timezone.TzDataSetVersion.TzDataSetException;
     method public static int currentFormatMajorVersion();
     method public static int currentFormatMinorVersion();
+    method public int getFormatMajorVersion();
+    method public int getFormatMinorVersion();
+    method public int getRevision();
+    method public String getRulesVersion();
     method public static boolean isCompatibleWithThisDevice(libcore.timezone.TzDataSetVersion);
     method public static libcore.timezone.TzDataSetVersion readFromFile(java.io.File) throws java.io.IOException, libcore.timezone.TzDataSetVersion.TzDataSetException;
+    method public static libcore.timezone.TzDataSetVersion readTimeZoneModuleVersion() throws java.io.IOException, libcore.timezone.TzDataSetVersion.TzDataSetException;
     method public byte[] toBytes();
     field public static final String DEFAULT_FILE_NAME = "tz_version";
-    field public final String rulesVersion;
   }
 
   public static class TzDataSetVersion.TzDataSetException extends java.lang.Exception {
@@ -1174,14 +1183,11 @@ package libcore.timezone {
     ctor public TzDataSetVersion.TzDataSetException(String, Throwable);
   }
 
-  public final class ZoneInfoDB {
-    method public static libcore.timezone.ZoneInfoDB.TzData getInstance();
-  }
-
-  public static class ZoneInfoDB.TzData implements java.lang.AutoCloseable {
+  public final class ZoneInfoDb implements java.lang.AutoCloseable {
+    method public static libcore.timezone.ZoneInfoDb getInstance();
     method public String getVersion();
     method public boolean hasTimeZone(String) throws java.io.IOException;
-    method public static libcore.timezone.ZoneInfoDB.TzData loadTzData(String);
+    method public static libcore.timezone.ZoneInfoDb loadTzData(String);
     method public libcore.util.ZoneInfo makeTimeZone(String) throws java.io.IOException;
     method public void validate() throws java.io.IOException;
   }
@@ -1409,14 +1415,30 @@ package sun.misc {
 
   public final class Unsafe {
     method public int arrayBaseOffset(Class);
+    method public int arrayIndexScale(Class);
+    method @dalvik.annotation.optimization.FastNative public void copyMemory(long, long, long);
+    method @dalvik.annotation.optimization.FastNative public boolean getBoolean(Object, long);
     method @dalvik.annotation.optimization.FastNative public byte getByte(Object, long);
     method @dalvik.annotation.optimization.FastNative public byte getByte(long);
+    method @dalvik.annotation.optimization.FastNative public double getDouble(Object, long);
+    method @dalvik.annotation.optimization.FastNative public float getFloat(Object, long);
+    method @dalvik.annotation.optimization.FastNative public int getInt(Object, long);
+    method @dalvik.annotation.optimization.FastNative public int getInt(long);
     method @dalvik.annotation.optimization.FastNative public long getLong(Object, long);
     method @dalvik.annotation.optimization.FastNative public long getLong(long);
+    method @dalvik.annotation.optimization.FastNative public Object getObject(Object, long);
     method public static sun.misc.Unsafe getUnsafe();
     method public long objectFieldOffset(java.lang.reflect.Field);
+    method @dalvik.annotation.optimization.FastNative public void putBoolean(Object, long, boolean);
     method @dalvik.annotation.optimization.FastNative public void putByte(Object, long, byte);
     method @dalvik.annotation.optimization.FastNative public void putByte(long, byte);
+    method @dalvik.annotation.optimization.FastNative public void putDouble(Object, long, double);
+    method @dalvik.annotation.optimization.FastNative public void putFloat(Object, long, float);
+    method @dalvik.annotation.optimization.FastNative public void putInt(Object, long, int);
+    method @dalvik.annotation.optimization.FastNative public void putInt(long, int);
+    method @dalvik.annotation.optimization.FastNative public void putLong(Object, long, long);
+    method @dalvik.annotation.optimization.FastNative public void putLong(long, long);
+    method @dalvik.annotation.optimization.FastNative public void putObject(Object, long, Object);
   }
 
 }

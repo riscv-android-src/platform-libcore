@@ -223,7 +223,10 @@ java_library {
 
     installable: false,
 
-    plugins: ["compat-changeid-annotation-processor"],
+    plugins: [
+        "compat-changeid-annotation-processor",
+        "unsupportedappusage-annotation-processor",
+    ],
 }
 
 platform_compat_config {
@@ -260,6 +263,10 @@ java_library {
         "//art/build/apex",
         "//external/wycheproof",
         "//libcore/benchmarks",
+    ],
+    apex_available: [
+        "com.android.art.release",
+        "com.android.art.debug",
     ],
     defaults: ["libcore_java_defaults"],
     installable: true,
@@ -304,6 +311,10 @@ java_library {
         "//external/wycheproof",
         "//libcore/benchmarks",
         "//frameworks/layoutlib",
+    ],
+    apex_available: [
+        "com.android.art.release",
+        "com.android.art.debug",
     ],
     defaults: ["libcore_java_defaults"],
     installable: true,
@@ -371,6 +382,7 @@ java_library {
     sdk_version: "none",
     system_modules: "core-all-system-modules",
     patch_module: "java.base",
+    plugins: ["unsupportedappusage-annotation-processor"],
 }
 
 //
@@ -476,10 +488,12 @@ java_library {
 java_library_static {
     name: "core-test-rules",
     visibility: [
+        "//art/build/sdk",
         "//external/conscrypt",
         "//frameworks/base/location/tests/locationtests",
         "//frameworks/base/core/tests/coretests",
         "//frameworks/base/wifi/tests",
+        "//cts/tests/tests/util",
     ],
     hostdex: true,
     srcs: [
@@ -496,6 +510,7 @@ java_library_static {
 java_library_static {
     name: "core-compat-test-rules",
     visibility: [
+        "//art/build/sdk",
         "//frameworks/base/tests/PlatformCompatGating/test-rules",
     ],
     srcs: [
@@ -519,6 +534,7 @@ java_library_static {
 java_library_static {
     name: "core-tests-support",
     visibility: [
+        "//art/build/sdk",
         "//cts/apps/CtsVerifier",
         "//cts/tests/tests/keystore",
         "//cts/tests/tests/net",
@@ -563,6 +579,14 @@ filegroup {
     visibility: ["//libcore/luni/src/test/java9language"],
 }
 
+genrule {
+    name: "core-tests-smali-dex",
+    srcs: ["luni/src/test/java/**/*.smali"],
+    cmd: "$(location smali) ass --api 28 -o $(out) $(in)",
+    out: ["core-tests-smali.dex"],
+    tools: ["smali"],
+}
+
 // Builds the core-tests library.
 java_test {
     name: "core-tests",
@@ -599,6 +623,7 @@ java_test {
         ":annotations-test",
         ":filesystemstest",
         ":parameter-metadata-test",
+        ":core-tests-smali-dex",
     ],
 
     sdk_version: "none",
@@ -609,7 +634,6 @@ java_test {
     ],
 
     static_libs: [
-        "archive-patcher",
         "core-compat-test-rules",
         "core-java-9-language-tests",
         "core-test-rules",
@@ -622,7 +646,7 @@ java_test {
         "slf4j-jdk14",
         "sqlite-jdbc",
         "tzdata-testing",
-        "truth-prebuilt",
+        "truth-prebuilt-jar",
     ],
 
     errorprone: {
@@ -866,6 +890,7 @@ java_library {
 java_system_modules {
     name: "art-module-public-api-stubs-system-modules",
     visibility: [
+        "//art/build/sdk",
         "//external/conscrypt",
         "//external/icu/android_icu4j",
         "//external/wycheproof",
@@ -968,6 +993,7 @@ droidstubs {
 java_library_host {
     name: "timezone-host",
     visibility: [
+        "//art/build/sdk",
         "//system/timezone/distro/core",
     ],
     srcs: [":timezone_host_files"],
