@@ -16,7 +16,11 @@
 
 package dalvik.system;
 
+import android.compat.annotation.ChangeId;
+import android.compat.annotation.EnabledAfter;
 import android.compat.annotation.UnsupportedAppUsage;
+
+import dalvik.annotation.compat.VersionCodes;
 
 import java.lang.ref.FinalizerReference;
 import java.util.HashMap;
@@ -24,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import dalvik.annotation.optimization.CriticalNative;
 import dalvik.annotation.optimization.FastNative;
 
 /**
@@ -57,6 +62,30 @@ public final class VMRuntime {
         ABI_TO_INSTRUCTION_SET_MAP.put("arm64-v8a", "arm64");
         ABI_TO_INSTRUCTION_SET_MAP.put("arm64-v8a-hwasan", "arm64");
     }
+
+    /**
+     * Remove meta-reflection workaround for hidden api usage for apps targeting R+. This allowed
+     * apps to obtain references to blacklisted fields and methods through an extra layer of
+     * reflection.
+     */
+    @ChangeId
+    @EnabledAfter(targetSdkVersion = VersionCodes.Q)
+    private static final long
+        PREVENT_META_REFLECTION_BLACKLIST_ACCESS = 142365358; // This is a bug id.
+
+    /**
+     * Gating access to greylist-max-p APIs.
+     */
+    @ChangeId
+    @EnabledAfter(targetSdkVersion = VersionCodes.P)
+    private static final long HIDE_MAXTARGETSDK_P_HIDDEN_APIS = 149997251; // This is a bug id.
+
+    /**
+     * Gating access to greylist-max-q APIs.
+     */
+    @ChangeId
+    @EnabledAfter(targetSdkVersion = VersionCodes.Q)
+    private static final long HIDE_MAXTARGETSDK_Q_HIDDEN_APIS = 149994052; // This is a bug id.
 
     /**
      * Interface for logging hidden API usage events.
@@ -461,12 +490,6 @@ public final class VMRuntime {
     public native void clampGrowthLimit();
 
     /**
-     * Returns true if either a Java debugger or native debugger is active.
-     */
-    @FastNative
-    public native boolean isDebuggerActive();
-
-    /**
      * Returns true if native debugging is on.
      */
     @libcore.api.CorePlatformApi
@@ -736,4 +759,15 @@ public final class VMRuntime {
      */
     @libcore.api.CorePlatformApi
     public static native void setProcessDataDirectory(String dataDir);
+
+    /**
+     * Returns whether {@code encodedClassLoaderContext} is a valid encoded class loader context.
+     * A class loader context is an internal opaque format used by the runtime to encode the
+     * class loader hierarchy (including each ClassLoader's classpath) used to load a dex file.
+     *
+     * @return True if encodedClassLoaderContext is a non-null valid encoded class loader context.
+     *   Throws NullPointerException if encodedClassLoaderContext is null.
+     */
+    @libcore.api.CorePlatformApi
+    public static native boolean isValidClassLoaderContext(String encodedClassLoaderContext);
 }
