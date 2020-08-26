@@ -128,15 +128,20 @@ public class BaseDexClassLoader extends ClassLoader {
                 : Arrays.copyOf(sharedLibraryLoaders, sharedLibraryLoaders.length);
         this.pathList = new DexPathList(this, dexPath, librarySearchPath, null, isTrusted);
 
-        if (reporter != null) {
-            reportClassLoaderChain();
-        }
+        reportClassLoaderChain();
     }
 
     /**
      * Reports the current class loader chain to the registered {@code reporter}.
+     *
+     * @hide
      */
-    private void reportClassLoaderChain() {
+    @libcore.api.CorePlatformApi
+    public void reportClassLoaderChain() {
+        if (reporter == null) {
+            return;
+        }
+
         String[] classPathAndClassLoaderContexts = computeClassLoaderContextsNative();
         if (classPathAndClassLoaderContexts.length == 0) {
             return;
@@ -284,7 +289,7 @@ public class BaseDexClassLoader extends ClassLoader {
      * provide it, in order to make all those hopeful callers of
      * {@code myClass.getPackage().getName()} happy. Thus we construct
      * a {@code Package} object the first time it is being requested
-     * and fill most of the fields with dummy values. The {@code
+     * and fill most of the fields with fake values. The {@code
      * Package} object is then put into the {@code ClassLoader}'s
      * package cache, so we see the same one next time. We don't
      * create {@code Package} objects for {@code null} arguments or
@@ -367,7 +372,7 @@ public class BaseDexClassLoader extends ClassLoader {
         /**
          * Reports the construction of a BaseDexClassLoader and provides opaque information about
          * the class loader chain. For example, if the childmost ClassLoader in the chain:
-         * {@quote BaseDexClassLoader { foo.dex } -> BaseDexClassLoader { base.apk } 
+         * {@quote BaseDexClassLoader { foo.dex } -> BaseDexClassLoader { base.apk }
          *    -> BootClassLoader } was just initialized then the load of {@code "foo.dex"} would be
          * reported with a classLoaderContext of {@code "PCL[];PCL[base.apk]"}.
          *

@@ -38,7 +38,8 @@ import dalvik.annotation.optimization.FastNative;
  *
  * @hide
  */
-@libcore.api.CorePlatformApi
+@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@libcore.api.IntraCoreApi
 public final class VMRuntime {
 
     /**
@@ -65,13 +66,13 @@ public final class VMRuntime {
 
     /**
      * Remove meta-reflection workaround for hidden api usage for apps targeting R+. This allowed
-     * apps to obtain references to blacklisted fields and methods through an extra layer of
+     * apps to obtain references to blocklist fields and methods through an extra layer of
      * reflection.
      */
     @ChangeId
     @EnabledAfter(targetSdkVersion = VersionCodes.Q)
     private static final long
-        PREVENT_META_REFLECTION_BLACKLIST_ACCESS = 142365358; // This is a bug id.
+        PREVENT_META_REFLECTION_BLOCKLIST_ACCESS = 142365358; // This is a bug id.
 
     /**
      * Gating access to greylist-max-p APIs.
@@ -166,7 +167,7 @@ public final class VMRuntime {
      * any released version in {@code android.os.Build.VERSION_CODES}.
      * @hide
      */
-    @libcore.api.CorePlatformApi
+    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int SDK_VERSION_CUR_DEVELOPMENT = 10000;
 
     private static Consumer<String> nonSdkApiUsageConsumer = null;
@@ -196,6 +197,7 @@ public final class VMRuntime {
      */
     @UnsupportedAppUsage
     @libcore.api.CorePlatformApi
+    @libcore.api.IntraCoreApi
     public static VMRuntime getRuntime() {
         return THE_ONE;
     }
@@ -258,7 +260,6 @@ public final class VMRuntime {
      *
      * @return the current ideal heap utilization
      */
-    @libcore.api.CorePlatformApi
     public native float getTargetHeapUtilization();
 
     /**
@@ -282,7 +283,6 @@ public final class VMRuntime {
      * @throws IllegalArgumentException if newTarget is &lt;= 0.0 or &gt;= 1.0
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi
     public float setTargetHeapUtilization(float newTarget) {
         if (newTarget <= 0.0f || newTarget >= 1.0f) {
             throw new IllegalArgumentException(newTarget + " out of range (0,1)");
@@ -453,6 +453,7 @@ public final class VMRuntime {
      */
     @UnsupportedAppUsage
     @libcore.api.CorePlatformApi
+    @libcore.api.IntraCoreApi
     @FastNative
     public native Object newNonMovableArray(Class<?> componentType, int length);
 
@@ -471,6 +472,7 @@ public final class VMRuntime {
      */
     @UnsupportedAppUsage
     @libcore.api.CorePlatformApi
+    @libcore.api.IntraCoreApi
     @FastNative
     public native long addressOf(Object array);
 
@@ -678,18 +680,7 @@ public final class VMRuntime {
      * set mapped from disk storage, versus being interpretted from
      * dirty pages in memory.
      */
-    @libcore.api.CorePlatformApi
     public static native boolean isBootClassPathOnDisk(String instructionSet);
-
-    /**
-     * Returns whether the runtime is using a boot image.
-     *
-     * <p>While isBootClassPathOnDisk checks for the existence of an image file on disk,
-     * this method queries the runtime whether it is <em>using</em> an image.
-     */
-    @libcore.api.CorePlatformApi
-    @FastNative
-    public static native boolean hasBootImageSpaces();
 
     /**
      * Used to notify the runtime that boot completed.
