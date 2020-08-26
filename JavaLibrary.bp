@@ -200,13 +200,15 @@ platform_compat_config {
 // It does not contain other parts of core library like conscrypt, bouncycastle,
 // etc. This system_modules definition is used to bootstrap compilation for
 // other parts of the core library like core-oj, core-libart, conscrypt,
-// bouncycastle, etc.
+// bouncycastle, etc. It is also used to compile Libcore tests, as well as ART
+// Java tests (run-tests).
 java_system_modules {
     name: "core-all-system-modules",
 
     // Visibility is deliberately restricted to a small set of build modules that
     // the core library team control.
     visibility: [
+        "//art/test:__subpackages__",
         "//external/apache-harmony:__subpackages__",
         "//external/apache-xml",
         "//external/okhttp",
@@ -307,6 +309,9 @@ java_library {
                 "tz_version_host_tzdata_apex",
             ],
         },
+        darwin: {
+            enabled: false,
+        },
     },
 }
 
@@ -372,6 +377,9 @@ java_library {
         ":openjdk_lambda_stub_files",
         ":openjdk_lambda_duplicate_stub_files",
     ],
+    // This jar is packaged as part of the SDK, use -target 8 so that it works
+    // with old JDKs.
+    java_version: "1.8",
 }
 
 // An alternative to core-lambda-stubs that omits openjdk_lambda_duplicate_stub_files
@@ -986,7 +994,10 @@ java_library_host {
         "//art/build/sdk",
         "//system/timezone/distro/core",
     ],
-    srcs: [":timezone_host_files"],
+    srcs: [
+        ":timezone_host_files",
+        ":timezone_host_libcore_files",
+    ],
 }
 
 // A special set of system modules for building the following library for use

@@ -26,8 +26,7 @@
 // "legacy" version also includes those which have not been audited for stability
 // or which are deprecated (which have the default status of LEGACY_ONLY).
 //
-// TODO(b/157640067): Move users away from the legacy versions to the stable ones,
-// and then get rid of the legacy versions.
+// TODO(b/161973015): Remove the legacy/stable distinction once no longer useful.
 
 droidstubs {
     name: "legacy-art-module-platform-api-stubs-source",
@@ -166,7 +165,7 @@ java_system_modules {
     ],
 }
 
-// Ideally this should be a restricted whitelist but there are hundreds of modules that depend on
+// Ideally this should be a restricted allowlist but there are hundreds of modules that depend on
 // this.
 // TODO(http://b/134561230) - limit the number of dependents on this.
 core_platform_visibility = ["//visibility:public"]
@@ -188,7 +187,7 @@ java_library {
     static_libs: [
         "legacy.art.module.platform.api.stubs",
         "conscrypt.module.platform.api.stubs",
-        "i18n.module.platform.api.stubs",
+        "legacy.i18n.module.platform.api.stubs",
     ],
     patch_module: "java.base",
 }
@@ -203,8 +202,9 @@ java_library {
     system_modules: "none",
     static_libs: [
         "stable.art.module.platform.api.stubs",
+        // conscrypt only has a stable version, so it is okay to depend on it here:
         "conscrypt.module.platform.api.stubs",
-        "i18n.module.platform.api.stubs",
+        "stable.i18n.module.platform.api.stubs",
     ],
     patch_module: "java.base",
 }
