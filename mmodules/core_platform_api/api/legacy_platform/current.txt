@@ -495,16 +495,6 @@ package dalvik.annotation.codegen {
 
 }
 
-package dalvik.annotation.compat {
-
-  public class VersionCodes {
-    field public static final int O = 26; // 0x1a
-    field public static final int P = 28; // 0x1c
-    field public static final int Q = 29; // 0x1d
-  }
-
-}
-
 package dalvik.annotation.optimization {
 
   @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.CLASS) @java.lang.annotation.Target(java.lang.annotation.ElementType.METHOD) public @interface CriticalNative {
@@ -521,6 +511,10 @@ package dalvik.system {
     method public Object getBlockedOn();
     method public Object[] getHeldLocks();
     method public StackTraceElement getStackTraceElement();
+  }
+
+  public class AppSpecializationHooks {
+    method public static void handleCompatChangesBeforeBindingApplication();
   }
 
   public class BaseDexClassLoader extends java.lang.ClassLoader {
@@ -596,7 +590,6 @@ package dalvik.system {
   }
 
   public final class RuntimeHooks {
-    method public static void setThreadPrioritySetter(@NonNull dalvik.system.ThreadPrioritySetter);
     method public static void setTimeZoneIdSupplier(java.util.function.Supplier<java.lang.String>);
     method public static void setUncaughtExceptionPreHandler(java.lang.Thread.UncaughtExceptionHandler);
   }
@@ -611,10 +604,6 @@ package dalvik.system {
     method public abstract void untag(java.io.FileDescriptor) throws java.net.SocketException;
     method public final void untag(java.net.Socket) throws java.net.SocketException;
     method public final void untag(java.net.DatagramSocket) throws java.net.SocketException;
-  }
-
-  @java.lang.FunctionalInterface public interface ThreadPrioritySetter {
-    method public void setPriority(int, int);
   }
 
   public final class VMDebug {
@@ -664,7 +653,6 @@ package dalvik.system {
     method public void clampGrowthLimit();
     method public void clearGrowthLimit();
     method public static boolean didPruneDalvikCache();
-    method public void disableJitCompilation();
     method public static String getCurrentInstructionSet();
     method public static String getInstructionSet(String);
     method public static dalvik.system.VMRuntime getRuntime();
@@ -696,7 +684,6 @@ package dalvik.system {
     method public static void setProcessDataDirectory(String);
     method public static void setProcessPackageName(String);
     method public void setTargetSdkVersion(int);
-    method public void startJitCompilation();
     method public void updateProcessState(int);
     method public String vmInstructionSet();
     method public String vmLibrary();

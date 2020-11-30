@@ -17,17 +17,18 @@
 package libcore.icu;
 
 import android.compat.annotation.UnsupportedAppUsage;
-import android.icu.text.CurrencyMetaInfo;
-import android.icu.text.CurrencyMetaInfo.CurrencyFilter;
 import android.icu.text.DateTimePatternGenerator;
+import android.icu.util.Currency;
+import android.icu.util.IllformedLocaleException;
 import android.icu.util.ULocale;
+
+import com.android.icu.util.LocaleNative;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,11 +51,23 @@ public final class ICU {
 
   private static String[] isoLanguages;
 
+  /**
+   * Avoid initialization with many dependencies here, because when this is called,
+   * lower-level classes, e.g. java.lang.System, are not initialized and java.lang.System
+   * relies on getIcuVersion().
+   */
   static {
+
+  }
+
+  private ICU() {
+  }
+
+  public static void initializeCacheInZygote() {
     // Fill CACHED_PATTERNS with the patterns from default locale and en-US initially.
-    // Likely, this is initialized in Zygote and the initial values in the cache can be shared
-    // among app. The cache was filled by LocaleData in the older Android platform, but moved to
-    // here, due to an performance issue http://b/161846393.
+    // This should be called in Zygote pre-fork process and the initial values in the cache
+    // can be shared among app. The cache was filled by LocaleData in the older Android platform,
+    // but moved here, due to an performance issue http://b/161846393.
     // It initializes 2 x 4 = 8 values in the CACHED_PATTERNS whose max size should be >= 8.
     for (Locale locale : new Locale[] {Locale.US, Locale.getDefault()}) {
       getTimePattern(locale, false, false);
@@ -62,9 +75,6 @@ public final class ICU {
       getTimePattern(locale, true, false);
       getTimePattern(locale, true, true);
     }
-  }
-
-  private ICU() {
   }
 
   /**
@@ -362,6 +372,22 @@ public final class ICU {
     return result;
   }
 
+  /**
+   * Returns the version of the CLDR data in use, such as "22.1.1".
+   *
+   */
+  public static native String getCldrVersion();
+
+  /**
+   * Returns the icu4c version in use, such as "50.1.1".
+   */
+  public static native String getIcuVersion();
+
+  /**
+   * Returns the Unicode version our ICU supports, such as "6.2".
+   */
+  public static native String getUnicodeVersion();
+
   // --- Errors.
 
   // --- Native methods accessing ICU's database.
@@ -374,10 +400,21 @@ public final class ICU {
      * @return ISO 4217 3-letter currency code if found, otherwise null.
      */
   public static String getCurrencyCode(String countryCode) {
-      CurrencyFilter filter = CurrencyFilter.onRegion(countryCode)
-          .withDate(new Date());
-      List<String> currencies = CurrencyMetaInfo.getInstance().currencies(filter);
-      return currencies.isEmpty() ? null : currencies.get(0);
+      // Fail fast when country code is not valid.
+      if (countryCode == null || countryCode.length() == 0) {
+          return null;
+      }
+      final ULocale countryLocale;
+      try {
+          countryLocale = new ULocale.Builder().setRegion(countryCode).build();
+      } catch (IllformedLocaleException e) {
+          return null; // Return null on invalid country code.
+      }
+      String[] isoCodes = Currency.getAvailableCurrencyCodes(countryLocale, new Date());
+      if (isoCodes == null || isoCodes.length == 0) {
+        return null;
+      }
+      return isoCodes[0];
   }
 
 
@@ -420,7 +457,9 @@ public final class ICU {
   /**
    * Takes a BCP-47 language tag (Locale.toLanguageTag()). e.g. en-US, not en_US
    */
-  public static native void setDefaultLocale(String languageTag);
+  public static void setDefaultLocale(String languageTag) {
+    LocaleNative.setDefault(languageTag);
+  }
 
   /**
    * Returns a locale name, not a BCP-47 language tag. e.g. en_US not en-US.
