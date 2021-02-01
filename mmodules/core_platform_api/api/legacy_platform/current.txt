@@ -64,7 +64,6 @@ package android.system {
     method public static int CAP_TO_INDEX(int);
     method public static int CAP_TO_MASK(int);
     field public static final int ARPHRD_LOOPBACK;
-    field public static final int ENONET;
     field public static final int EUSERS;
     field public static final int MAP_POPULATE;
     field public static final int O_DIRECT;
@@ -734,7 +733,6 @@ package java.lang {
   public final class Class<T> implements java.lang.reflect.AnnotatedElement java.lang.reflect.GenericDeclaration java.io.Serializable java.lang.reflect.Type {
     method @dalvik.annotation.optimization.FastNative public java.lang.reflect.Field[] getDeclaredFieldsUnchecked(boolean);
     method @dalvik.annotation.optimization.FastNative public java.lang.reflect.Method[] getDeclaredMethodsUnchecked(boolean);
-    method public String getPackageName$();
   }
 
   public final class Math {
@@ -840,10 +838,6 @@ package java.util {
 
   public class LinkedHashMap<K, V> extends java.util.HashMap<K,V> implements java.util.Map<K,V> {
     method public java.util.Map.Entry<K,V> eldest();
-  }
-
-  public final class Locale implements java.lang.Cloneable java.io.Serializable {
-    method public static String adjustLanguageCode(String);
   }
 
 }
@@ -1008,10 +1002,6 @@ package libcore.net.event {
 
 package libcore.util {
 
-  public final class ArrayUtils {
-    method public static void throwsIfOutOfBounds(int, int, int);
-  }
-
   public final class EmptyArray {
     field public static final boolean[] BOOLEAN;
     field public static final byte[] BYTE;
@@ -1093,32 +1083,6 @@ package libcore.util {
     method public static org.xml.sax.XMLReader newXMLReader();
     method public static org.xmlpull.v1.XmlPullParser newXmlPullParser();
     method public static org.xmlpull.v1.XmlSerializer newXmlSerializer();
-  }
-
-}
-
-package org.apache.harmony.dalvik {
-
-  public final class NativeTestTarget {
-    ctor public NativeTestTarget();
-    method public static void emptyInlineMethod();
-    method public static void emptyInternalStaticMethod();
-    method public void emptyJniMethod0();
-    method @dalvik.annotation.optimization.FastNative public void emptyJniMethod0_Fast();
-    method public void emptyJniMethod6(int, int, int, int, int, int);
-    method public void emptyJniMethod6L(String, String[], int[][], Object, Object[], Object[][][][]);
-    method @dalvik.annotation.optimization.FastNative public void emptyJniMethod6L_Fast(String, String[], int[][], Object, Object[], Object[][][][]);
-    method @dalvik.annotation.optimization.FastNative public void emptyJniMethod6_Fast(int, int, int, int, int, int);
-    method public static void emptyJniStaticMethod0();
-    method @dalvik.annotation.optimization.CriticalNative public static void emptyJniStaticMethod0_Critical();
-    method @dalvik.annotation.optimization.FastNative public static void emptyJniStaticMethod0_Fast();
-    method public static void emptyJniStaticMethod6(int, int, int, int, int, int);
-    method public static void emptyJniStaticMethod6L(String, String[], int[][], Object, Object[], Object[][][][]);
-    method @dalvik.annotation.optimization.FastNative public static void emptyJniStaticMethod6L_Fast(String, String[], int[][], Object, Object[], Object[][][][]);
-    method @dalvik.annotation.optimization.CriticalNative public static void emptyJniStaticMethod6_Critical(int, int, int, int, int, int);
-    method @dalvik.annotation.optimization.FastNative public static void emptyJniStaticMethod6_Fast(int, int, int, int, int, int);
-    method public static void emptyJniStaticSynchronizedMethod0();
-    method public void emptyJniSynchronizedMethod0();
   }
 
 }
@@ -1252,14 +1216,6 @@ package sun.security.x509 {
   public class AlgorithmId implements java.io.Serializable {
     ctor public AlgorithmId(sun.security.util.ObjectIdentifier);
     method public String getName();
-  }
-
-}
-
-package sun.util.locale {
-
-  public class LanguageTag {
-    method public static boolean isLanguage(String);
   }
 
 }
