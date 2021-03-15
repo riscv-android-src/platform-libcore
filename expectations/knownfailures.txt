@@ -100,11 +100,6 @@
   name: "org.apache.harmony.security.tests.java.security.SignatureTest#testUpdatebyteArrayintint2"
 },
 {
-  description: "Android doesn't allow null parent.",
-  result: EXEC_FAILED,
-  name: "tests.java.security.SecureClassLoaderTest#testSecureClassLoaderClassLoader"
-},
-{
   description: "not supported",
   result: EXEC_FAILED,
   names: [
@@ -1791,11 +1786,6 @@
   result: EXEC_FAILED,
   bug: 62408076,
   name: "libcore.java.lang.reflect.annotations.AnnotatedElementParameterTest#testImplicitConstructorParameters_singleAnnotation"
-},
-{
-  description: "Collection8Test is not a valid TestCase but AndroidJUnitRunner still tries to create an instance.",
-  result: EXEC_FAILED,
-  name: "test.java.util.concurrent.tck.Collection8Test"
 },
 {
   description: "Android has different implementation in classes, e.g. SecurityManager.",
