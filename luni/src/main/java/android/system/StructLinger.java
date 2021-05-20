@@ -22,24 +22,41 @@ import libcore.util.Objects;
  * Corresponds to C's {@code struct linger} from
  * <a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_socket.h.html">&lt;sys/socket.h&gt;</a>
  *
- * @hide
+ * When enabled, a {@link Os#close(java.io.FileDescriptor)} or
+ * {@link Os#shutdown(java.io.FileDescriptor, int)} will
+ * not return until all queued messages for the socket have been successfully sent or the
+ * linger timeout has been reached. Otherwise, the call returns immediately and the closing is
+ * done in the background.
+ *
+ * See <a href="https://man7.org/linux/man-pages/man7/socket.7.html">socket(7)</a>
+ * for linger struct description.
+ *
+ * @see Os#getsockoptLinger(java.io.FileDescriptor, int, int).
+ * @see OsConstants#SO_LINGER
  */
-@libcore.api.CorePlatformApi
 public final class StructLinger {
     /** Whether or not linger is enabled. Non-zero is on. */
     public final int l_onoff;
 
     /** Linger time in seconds. */
-    @libcore.api.CorePlatformApi
     public final int l_linger;
 
-    @libcore.api.CorePlatformApi
+    /**
+     * Constructs linger structure.
+     *
+     * @param l_onoff  whether or not linger is enabled, non-zero is on
+     * @param l_linger linger time, in seconds
+     */
     public StructLinger(int l_onoff, int l_linger) {
         this.l_onoff = l_onoff;
         this.l_linger = l_linger;
     }
 
-    @libcore.api.CorePlatformApi
+    /**
+     * Returns whether linger is on or not.
+     *
+     * @return {@code true} if linger is enabled, and {@code false} otherwise
+     */
     public boolean isOn() {
         return l_onoff != 0;
     }
