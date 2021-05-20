@@ -186,6 +186,7 @@ public final class VMRuntime {
      * @hide
      */
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    // Must match android.os.Build.VERSION_CODES.CUR_DEVELOPMENT.
     public static final int SDK_VERSION_CUR_DEVELOPMENT = 10000;
 
     private static Consumer<String> nonSdkApiUsageConsumer = null;
@@ -651,7 +652,6 @@ public final class VMRuntime {
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public native void requestConcurrentGC();
 
-    public native void concurrentGC();
     public native void requestHeapTrim();
     public native void trimHeap();
     public native void startHeapTaskProcessor();

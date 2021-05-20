@@ -21,8 +21,8 @@ import android.system.GaiException;
 import android.system.Int32Ref;
 import android.system.Int64Ref;
 import android.system.StructAddrinfo;
-import android.system.StructCapUserData;
-import android.system.StructCapUserHeader;
+import android.system.StructUserCapData;
+import android.system.StructUserCapHeader;
 import android.system.StructGroupReq;
 import android.system.StructIfaddrs;
 import android.system.StructLinger;
@@ -45,16 +45,25 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 
-/** @hide */
-@libcore.api.CorePlatformApi
+/**
+ * Linux-like operating system. The user of this interface has access to various methods
+ * that expose basic operating system functionality, like file and file descriptors operations
+ * (open, close, read, write), socket operations (connect, bind, send*, recv*), process
+ * operations (exec*, getpid), filesystem operations (mkdir, unlink, chmod, chown) and others.
+ *
+ * @see Linux
+ *
+ * @hide
+ */
+@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
 public interface Os {
     public FileDescriptor accept(FileDescriptor fd, SocketAddress peerAddress) throws ErrnoException, SocketException;
     public boolean access(String path, int mode) throws ErrnoException;
     public InetAddress[] android_getaddrinfo(String node, StructAddrinfo hints, int netId) throws GaiException;
     public void bind(FileDescriptor fd, InetAddress address, int port) throws ErrnoException, SocketException;
     public void bind(FileDescriptor fd, SocketAddress address) throws ErrnoException, SocketException;
-    public StructCapUserData[] capget(StructCapUserHeader hdr) throws ErrnoException;
-    public void capset(StructCapUserHeader hdr, StructCapUserData[] data) throws ErrnoException;
+    public StructUserCapData[] capget(StructUserCapHeader hdr) throws ErrnoException;
+    public void capset(StructUserCapHeader hdr, StructUserCapData[] data) throws ErrnoException;
     @UnsupportedAppUsage
     public void chmod(String path, int mode) throws ErrnoException;
     public void chown(String path, int uid, int gid) throws ErrnoException;
@@ -215,7 +224,7 @@ public interface Os {
      * @param update the new value to set; must not be null.
      * @return whether the update was successful.
      */
-    @libcore.api.CorePlatformApi
+    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static boolean compareAndSetDefault(Os expect, Os update) {
         return Libcore.compareAndSetOs(expect, update);
     }
@@ -223,7 +232,7 @@ public interface Os {
     /**
      * @return the system's default {@link Os} implementation currently in use.
      */
-    @libcore.api.CorePlatformApi
+    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static Os getDefault() {
         return Libcore.getOs();
     }
