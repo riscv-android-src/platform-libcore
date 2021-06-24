@@ -71,11 +71,13 @@ public boolean equals(java.lang.Object obj) { throw new RuntimeException("Stub!"
 
 public boolean isIPv4CompatibleAddress() { throw new RuntimeException("Stub!"); }
 
-@libcore.api.CorePlatformApi
+@android.annotation.SystemApi(client = android.annotation.SystemApi.Client.MODULE_LIBRARIES)
+@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
 public static final java.net.InetAddress ANY;
 static { ANY = null; }
 
-@libcore.api.CorePlatformApi
+@android.annotation.SystemApi(client = android.annotation.SystemApi.Client.MODULE_LIBRARIES)
+@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
 public static final java.net.InetAddress LOOPBACK;
 static { LOOPBACK = null; }
 }
