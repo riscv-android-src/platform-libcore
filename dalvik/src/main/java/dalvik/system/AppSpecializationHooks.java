@@ -16,15 +16,20 @@
 
 package dalvik.system;
 
-import libcore.api.CorePlatformApi;
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
 
 /**
  * Used by frameworks to specialize libcore in an app process.
  *
  * @hide
  */
-@CorePlatformApi
+@SystemApi(client = MODULE_LIBRARIES)
+@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
 public class AppSpecializationHooks {
+
+    private AppSpecializationHooks() {}
 
     /**
      * Called in {@link android.app.ActivityThread}, but before binding the application. This method
@@ -37,7 +42,8 @@ public class AppSpecializationHooks {
      *
      * @hide
      */
-    @CorePlatformApi
+    @SystemApi(client = MODULE_LIBRARIES)
+    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static void handleCompatChangesBeforeBindingApplication() {
         com.android.i18n.system.AppSpecializationHooks
                 .handleCompatChangesBeforeBindingApplication();

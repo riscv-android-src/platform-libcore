@@ -16,6 +16,9 @@
 
 package libcore.io;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
 import android.compat.annotation.UnsupportedAppUsage;
 
 import java.io.ByteArrayOutputStream;
@@ -27,8 +30,15 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicReference;
 import libcore.util.ArrayUtils;
+import libcore.util.NonNull;
+import libcore.util.Nullable;
 
-/** @hide */
+/**
+ * Convenience class for reading and writing streams of bytes.
+ *
+ * @hide
+ */
+@SystemApi(client = MODULE_LIBRARIES)
 @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
 public final class Streams {
     private static AtomicReference<byte[]> skipBuffer = new AtomicReference<byte[]>();
@@ -36,37 +46,59 @@ public final class Streams {
     private Streams() {}
 
     /**
-     * Implements InputStream.read(int) in terms of InputStream.read(byte[], int, int).
-     * InputStream assumes that you implement InputStream.read(int) and provides default
+     * Implements {@link InputStream#read(int)} in terms of {@link InputStream#read(byte[], int, int)}.
+     * {@link InputStream} assumes that you implement {@link InputStream#read(int)} and provides default
      * implementations of the others, but often the opposite is more efficient.
+     *
+     * @param in {@link InputStream} to read byte from
+     * @return singlge byte read from {@code in}
+     * @throws IOException in case of I/O error
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi
-    public static int readSingleByte(InputStream in) throws IOException {
+    @SystemApi(client = MODULE_LIBRARIES)
+    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    public static int readSingleByte(@NonNull InputStream in) throws IOException {
         byte[] buffer = new byte[1];
         int result = in.read(buffer, 0, 1);
         return (result != -1) ? buffer[0] & 0xff : -1;
     }
 
     /**
-     * Implements OutputStream.write(int) in terms of OutputStream.write(byte[], int, int).
-     * OutputStream assumes that you implement OutputStream.write(int) and provides default
+     * Implements {@link OutputStream#write(int)} in terms of {@link OutputStream#write(byte[], int, int)}.
+     * {@link OutputStream} assumes that you implement {@link OutputStream#write(int)} and provides default
      * implementations of the others, but often the opposite is more efficient.
+     *
+     * @param out {@link OutputStream} to write byte to
+     * @param b byte to write to stream {@code out}
+     * @throws IOException in case of I/O error
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi
-    public static void writeSingleByte(OutputStream out, int b) throws IOException {
+    @SystemApi(client = MODULE_LIBRARIES)
+    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    public static void writeSingleByte(@NonNull OutputStream out, int b) throws IOException {
         byte[] buffer = new byte[1];
         buffer[0] = (byte) (b & 0xff);
         out.write(buffer);
     }
 
     /**
-     * Fills 'dst' with bytes from 'in', throwing EOFException if insufficient bytes are available.
+     * Fills byte buffer {@code dst} with bytes from {@link InputStream} {@code in}, throwing
+     * {@link EOFException} if insufficient bytes are available.
+     *
+     * @param in {@link InputStream} to read data from
+     * @param dst byte buffer to write data to
+     * @throws IOException in case of I/O error
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi
-    public static void readFully(InputStream in, byte[] dst) throws IOException {
+    @SystemApi(client = MODULE_LIBRARIES)
+    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    public static void readFully(@NonNull InputStream in, @NonNull byte[] dst) throws IOException {
         readFully(in, dst, 0, dst.length);
     }
 
@@ -75,6 +107,8 @@ public final class Streams {
      * EOFException if insufficient bytes are available.
      *
      * Used to implement {@link java.io.DataInputStream#readFully(byte[], int, int)}.
+     *
+     * @hide
      */
     public static void readFully(InputStream in, byte[] dst, int offset, int byteCount) throws IOException {
         if (byteCount == 0) {
@@ -98,15 +132,19 @@ public final class Streams {
     }
 
     /**
-     * Returns a byte[] containing the remainder of {@code in} stream and
+     * Returns a {@code byte[]} containing the remainder of {@code in} stream and
      * closes it. Also see {@link #readFullyNoClose(InputStream)}.
      *
+     * @param in {@link InputStream} to read data from
      * @return remaining bytes in {@code in} stream.
      * @throws IOException thrown by {@link InputStream#read(byte[])}.
+     *
+     * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public static byte[] readFully(InputStream in) throws IOException {
+    public static @NonNull byte[] readFully(@NonNull InputStream in) throws IOException {
         try {
             return readFullyNoClose(in);
         } finally {
@@ -115,14 +153,18 @@ public final class Streams {
     }
 
     /**
-     * Returns a byte[] containing the remainder of {@code in} stream, without
+     * Returns a {@code byte[]} containing the remainder of {@code in} stream, without
      * closing it.
      *
+     * @param in {@link InputStream} to read data from
      * @return remaining bytes in {@code in} stream.
      * @throws IOException thrown by {@link InputStream#read(byte[])}.
+     *
+     * @hide
      */
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public static byte[] readFullyNoClose(InputStream in) throws IOException {
+    public static @NonNull byte[] readFullyNoClose(@NonNull InputStream in) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int count;
@@ -138,9 +180,12 @@ public final class Streams {
      * @param reader {@link Reader} instance.
      * @return remainder of {@code reader} as {@link String}.
      * @throws IOException thrown by {@link Reader#read(java.nio.CharBuffer)}.
+     *
+     * @hide
      */
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public static String readFully(Reader reader) throws IOException {
+    public static @NonNull String readFully(@NonNull Reader reader) throws IOException {
         try {
             StringWriter writer = new StringWriter();
             char[] buffer = new char[1024];
@@ -154,6 +199,9 @@ public final class Streams {
         }
     }
 
+    /**
+     * @hide
+     */
     @UnsupportedAppUsage
     public static void skipAll(InputStream in) throws IOException {
         do {
@@ -172,9 +220,17 @@ public final class Streams {
      * other threads. A thread-local buffer is also insufficient because some
      * streams may call other streams in their skip() method, also clobbering the
      * buffer.
+     *
+     * @param in {@link InputStream} to skip data from
+     * @param byteCount number of bytes to skip from {@code in}
+     * @return number of bytes skipped from {@code in}
+     * @throws IOException in case of I/O error
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi
-    public static long skipByReading(InputStream in, long byteCount) throws IOException {
+    @SystemApi(client = MODULE_LIBRARIES)
+    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    public static long skipByReading(@NonNull InputStream in, long byteCount) throws IOException {
         // acquire the shared skip buffer.
         byte[] buffer = skipBuffer.getAndSet(null);
         if (buffer == null) {
@@ -204,13 +260,17 @@ public final class Streams {
      * Copies all of the bytes from {@code in} to {@code out}. Neither stream is
      * closed.
      *
+     * @param in {@link InputStream} to copy data from
+     * @param out {@link InputStream} to write copied data to
      * @return the total number of bytes transferred.
-     * @throws IOException reading from {@link InputStream} or writing to
-     * {@link OutputStream}.
+     * @throws IOException reading from {@link InputStream} or writing to {@link OutputStream}.
+     *
+     * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public static int copy(InputStream in, OutputStream out) throws IOException {
+    public static int copy(@NonNull InputStream in, @NonNull OutputStream out) throws IOException {
         int total = 0;
         byte[] buffer = new byte[8192];
         int c;
@@ -227,6 +287,8 @@ public final class Streams {
      *
      * @throws java.io.EOFException if the stream is exhausted before the next newline
      *     character.
+     *
+     * @hide
      */
     @UnsupportedAppUsage
     public static String readAsciiLine(InputStream in) throws IOException {
