@@ -16,18 +16,23 @@
 
 package android.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
+
 import libcore.util.Objects;
 
 /**
  * Corresponds to Linux' __user_cap_header_struct for capget and capset.
- * Used in {@link Os.capget( StructUserCapHeader )} and
- * {@link Os.capset( StructUserCapHeader , StructUserCapData[])}.
+ * Used in {@link Os.capget(StructCapUserHeader)} and
+ * {@link Os.capset(StructCapUserHeader, StructCapUserData[])}.
  *
  * Capabilities defined in <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities(7)</a>
  * @hide
  */
+@SystemApi(client = MODULE_LIBRARIES)
 @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-public final class StructUserCapHeader {
+public final class StructCapUserHeader {
     /**
      * Version of the header. Note this is not final as capget() may mutate the field when an
      * invalid version is provided.
@@ -35,10 +40,16 @@ public final class StructUserCapHeader {
      * See <a href="http://man7.org/linux/man-pages/man2/capget.2.html">capget(2)</a>.
      *
      * @see {@link OsConstants._LINUX_CAPABILITY_VERSION_3}.
+     *
+     * @hide
      */
     public int version; /* __u32 */
 
-    /** Pid of the header. The pid a call applies to. */
+    /**
+     * Pid of the header. The pid a call applies to.
+     *
+     * @hide
+     */
     public final int pid;
 
     /**
@@ -46,13 +57,19 @@ public final class StructUserCapHeader {
      *
      * @param version linux capability version
      * @param pid     process id
+     *
+     * @hide
      */
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public StructUserCapHeader(int version, int pid) {
+    public StructCapUserHeader(int version, int pid) {
         this.version = version;
         this.pid = pid;
     }
 
+    /**
+     * @hide
+     */
     @Override public String toString() {
         return Objects.toString(this);
     }

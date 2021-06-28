@@ -16,28 +16,48 @@
 
 package android.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
+
 import libcore.util.Objects;
 
 /**
  * Corresponds to Linux' __user_cap_data_struct for capget and capset.
- * Used in {@link Os.capget( StructUserCapHeader )} and
- * {@link Os.capset( StructUserCapHeader , StructUserCapData[])}.
+ * Used in {@link Os.capget(StructCapUserHeader)} and
+ * {@link Os.capset(StructCapUserHeader, StructCapUserData[])}.
  *
  * See <a href="https://man7.org/linux/man-pages/man2/capget.2.html">capget(2)</a>.
  *
  * @hide
  */
+@SystemApi(client = MODULE_LIBRARIES)
 @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-public final class StructUserCapData {
-    /** Effective capability mask. */
+public final class StructCapUserData {
+    /**
+     * Effective capability mask.
+     *
+     * @hide
+     */
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public final int effective; /* __u32 */
 
-    /** Permitted capability mask. */
+    /**
+     * Permitted capability mask.
+     *
+     * @hide
+     */
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public final int permitted; /* __u32 */
 
-    /** Inheritable capability mask. */
+    /**
+     * Inheritable capability mask.
+     *
+     * @hide
+     */
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public final int inheritable; /* __u32 */
 
@@ -47,14 +67,20 @@ public final class StructUserCapData {
      * @param effective   effective capability mask
      * @param permitted   permitted capability mask
      * @param inheritable inheritable capability mask
+     *
+     * @hide
      */
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public StructUserCapData(int effective, int permitted, int inheritable) {
+    public StructCapUserData(int effective, int permitted, int inheritable) {
         this.effective = effective;
         this.permitted = permitted;
         this.inheritable = inheritable;
     }
 
+    /**
+     * @hide
+     */
     @Override public String toString() {
         return Objects.toString(this);
     }
