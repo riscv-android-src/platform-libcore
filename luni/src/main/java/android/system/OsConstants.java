@@ -16,6 +16,9 @@
 
 package android.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
 import android.compat.annotation.UnsupportedAppUsage;
 
 /**
@@ -27,21 +30,22 @@ public final class OsConstants {
     }
 
     /**
-     * Returns the index of the element in the {@link StructUserCapData} (cap_user_data)
+     * Returns the index of the element in the {@link StructCapUserData} (cap_user_data)
      * array that this capability is stored in.
      *
      * @param x capability
-     * @return index of the element in the {@link StructUserCapData} array storing this capability
+     * @return index of the element in the {@link StructCapUserData} array storing this capability
      *
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static int CAP_TO_INDEX(int x) { return x >>> 5; }
 
     /**
      * Returns the mask for the given capability. This is relative to the capability's
-     * {@link StructUserCapData} (cap_user_data) element, the index of which can be
+     * {@link StructCapUserData} (cap_user_data) element, the index of which can be
      * retrieved with {@link CAP_TO_INDEX}.
      *
      * @param x capability
@@ -50,6 +54,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static int CAP_TO_MASK(int x) { return 1 << (x & 31); }
 
@@ -185,6 +190,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int ARPHRD_LOOPBACK = placeholder();
     public static final int CAP_AUDIT_CONTROL = placeholder();
@@ -325,6 +331,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int EUSERS = placeholder();
     // On Linux, EWOULDBLOCK == EAGAIN. Use EAGAIN instead, to reduce confusion.
@@ -412,15 +419,16 @@ public final class OsConstants {
     public static final int IP_TOS = placeholder();
     public static final int IP_TTL = placeholder();
     /**
-     * Version constant to be used in {@link StructUserCapHeader} with
-     * {@link Os#capset(StructUserCapHeader, StructUserCapData[])} and
-     * {@link Os#capget(StructUserCapHeader)}.
+     * Version constant to be used in {@link StructCapUserHeader} with
+     * {@link Os#capset(StructCapUserHeader, StructCapUserData[])} and
+     * {@link Os#capget(StructCapUserHeader)}.
      *
      * See <a href="https://man7.org/linux/man-pages/man2/capget.2.html">capget(2)</a>.
      *
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int _LINUX_CAPABILITY_VERSION_3 = placeholder();
     public static final int MAP_FIXED = placeholder();
@@ -433,6 +441,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int MAP_POPULATE = placeholder();
     public static final int MAP_PRIVATE = placeholder();
@@ -489,6 +498,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int O_DIRECT = placeholder();
     public static final int O_EXCL = placeholder();
@@ -520,6 +530,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int PR_CAP_AMBIENT = placeholder();
     /**
@@ -532,6 +543,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int PR_CAP_AMBIENT_RAISE = placeholder();
     public static final int PR_GET_DUMPABLE = placeholder();
@@ -555,6 +567,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int RLIMIT_NOFILE = placeholder();
     public static final int RT_SCOPE_HOST = placeholder();
@@ -571,6 +584,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int RTMGRP_IPV4_IFADDR = placeholder();
     /** @hide */
@@ -719,6 +733,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int SPLICE_F_MOVE = placeholder();
     /** @hide */
@@ -736,6 +751,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int SPLICE_F_MORE = placeholder();
     public static final int STDERR_FILENO = placeholder();
@@ -785,6 +801,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int TIOCOUTQ = placeholder();
     /**
@@ -793,6 +810,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int UDP_ENCAP = placeholder();
     /** @hide */
@@ -800,6 +818,7 @@ public final class OsConstants {
     public static final int UDP_ENCAP_ESPINUDP_NON_IKE = placeholder();
     /** @hide */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int UDP_ENCAP_ESPINUDP = placeholder();
     /** @hide */
@@ -822,6 +841,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int XATTR_CREATE = placeholder();
     /**
@@ -835,6 +855,7 @@ public final class OsConstants {
      * @hide
      */
     @UnsupportedAppUsage
+    @SystemApi(client = MODULE_LIBRARIES)
     @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
     public static final int XATTR_REPLACE = placeholder();
     public static final int X_OK = placeholder();
