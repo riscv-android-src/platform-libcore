@@ -883,6 +883,7 @@ java_sdk_library {
     name: "art.module.public.api",
     visibility: [
         "//art/build/sdk",
+        "//libcore/mmodules/core_platform_api",
         "//frameworks/base",
         "//frameworks/base/api",
     ],
@@ -895,6 +896,7 @@ java_sdk_library {
         // ojluni/annotated/mmodules and rather than in the original source. See the comments
         // in openjdk_java_files.bp for more details.
         ":openjdk_mmodule_extra_files",
+        ":okhttp_api_files",
 
     ],
     libs: [
@@ -996,6 +998,22 @@ java_system_modules {
     ],
 }
 
+// Used when compiling higher-level code against art.module.public.api.stubs.module_lib.
+//
+// This is only intended for use within core libraries and must not be used
+// from outside.
+java_system_modules {
+    name: "art-module-lib-api-stubs-system-modules",
+    visibility: [
+        "//art/build/sdk",
+        "//external/conscrypt",
+        "//external/icu/android_icu4j",
+    ],
+    libs: [
+        "art.module.public.api.stubs.module_lib",
+    ],
+}
+
 // A stubs target containing the parts of the public SDK API provided by the
 // core library.
 //
@@ -1053,6 +1071,43 @@ java_system_modules {
     libs: [
         "core-current-stubs-for-system-modules",
     ],
+}
+
+// A stubs target containing the parts of the public SDK & @SystemApi(MODULE_LIBRARIES) API
+// provided by the core library.
+//
+// Don't use this directly, use "sdk_version: module_current".
+java_library {
+    name: "core.module_lib.stubs",
+    static_libs: [
+        "art.module.public.api.stubs.module_lib",
+
+        // Replace the following with the module-lib correspondence when Conscrypt or i18N module
+        // provides @SystemApi(MODULE_LIBRARIES). Currently, assume that only ART module provides
+        // @SystemApi(MODULE_LIBRARIES).
+        "conscrypt.module.public.api.stubs",
+        "i18n.module.public.api.stubs",
+    ],
+    sdk_version: "none",
+    system_modules: "none",
+    visibility: ["//visibility:private"],
+}
+
+// Used when compiling higher-level code with sdk_version "module_current"
+java_system_modules {
+    name: "core-module-lib-stubs-system-modules",
+    libs: [
+        "core.module_lib.stubs",
+        // This one is not on device but it's needed when javac compiles code
+        // containing lambdas.
+        "core-lambda-stubs-for-system-modules",
+        // This one is not on device but it's needed when javac compiles code
+        // containing @Generated annotations produced by some code generation
+        // tools.
+        // See http://b/123891440.
+        "core-generated-annotation-stubs",
+    ],
+    visibility: ["//visibility:public"],
 }
 
 // Target for validating nullability annotations for correctness and
