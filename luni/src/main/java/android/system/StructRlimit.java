@@ -16,6 +16,10 @@
 
 package android.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
+
 import libcore.util.Objects;
 
 /**
@@ -26,19 +30,33 @@ import libcore.util.Objects;
  *
  * @hide
  */
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public final class StructRlimit {
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    /** Soft limit */
+
+    /**
+     * Soft limit
+     *
+     * @hide
+     */
+    @SystemApi(client = MODULE_LIBRARIES)
     public final long rlim_cur;
-    /** Hard limit (ceiling for rlim_cur) */
+    /**
+     * Hard limit (ceiling for rlim_cur)
+     *
+     * @hide
+     */
     public final long rlim_max;
 
+    /**
+     * @hide
+     */
     public StructRlimit(long rlim_cur, long rlim_max) {
         this.rlim_cur = rlim_cur;
         this.rlim_max = rlim_max;
     }
-
+    /**
+     * @hide
+     */
     @Override public String toString() {
         return Objects.toString(this);
     }

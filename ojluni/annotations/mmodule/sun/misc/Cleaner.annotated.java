@@ -28,16 +28,19 @@ package sun.misc;
 
 import java.lang.ref.*;
 
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@android.annotation.SystemApi(client = android.annotation.SystemApi.Client.MODULE_LIBRARIES)
 @libcore.api.Hide
 @SuppressWarnings({"unchecked", "deprecation", "all"})
 public class Cleaner extends java.lang.ref.PhantomReference<java.lang.Object> {
 
+@libcore.api.Hide
 Cleaner(java.lang.Object referent, java.lang.Runnable thunk) { super(null, null); throw new RuntimeException("Stub!"); }
 
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@libcore.api.Hide
+@android.annotation.SystemApi(client = android.annotation.SystemApi.Client.MODULE_LIBRARIES)
 public static sun.misc.Cleaner create(java.lang.Object ob, java.lang.Runnable thunk) { throw new RuntimeException("Stub!"); }
 
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@libcore.api.Hide
+@android.annotation.SystemApi(client = android.annotation.SystemApi.Client.MODULE_LIBRARIES)
 public void clean() { throw new RuntimeException("Stub!"); }
 }

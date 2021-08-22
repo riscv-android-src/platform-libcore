@@ -16,6 +16,9 @@
 
 package dalvik.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
 import android.compat.annotation.UnsupportedAppUsage;
 import java.io.File;
 import java.io.IOException;
@@ -141,7 +144,7 @@ public class BaseDexClassLoader extends ClassLoader {
      *
      * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public void reportClassLoaderChain() {
         if (reporter == null) {
             return;
@@ -229,7 +232,7 @@ public class BaseDexClassLoader extends ClassLoader {
      * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public void addDexPath(@Nullable String dexPath) {
         addDexPath(dexPath, false /*isTrusted*/);
     }
@@ -250,7 +253,7 @@ public class BaseDexClassLoader extends ClassLoader {
      *
      * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public void addNativePath(@NonNull Collection<String> libPaths) {
         pathList.addNativePath(libPaths);
     }
@@ -346,7 +349,7 @@ public class BaseDexClassLoader extends ClassLoader {
      * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public @NonNull String getLdLibraryPath() {
         StringBuilder result = new StringBuilder();
         for (File directory : pathList.getNativeLibraryDirectories()) {
@@ -371,7 +374,7 @@ public class BaseDexClassLoader extends ClassLoader {
      * @param newReporter the new Reporter. Setting {@code null} will cancel reporting.
      * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void setReporter(@Nullable Reporter newReporter) {
         reporter = newReporter;
     }
@@ -389,7 +392,7 @@ public class BaseDexClassLoader extends ClassLoader {
      *
      * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public interface Reporter {
         /**
          * Reports the construction of a BaseDexClassLoader and provides opaque information about
@@ -400,8 +403,10 @@ public class BaseDexClassLoader extends ClassLoader {
          *
          * @param contextsMap A map from dex file paths to the class loader context used to load
          *     each dex file.
+         *
+         * @hide
          */
-        @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+        @SystemApi(client = MODULE_LIBRARIES)
         void report(@NonNull Map<String, String> contextsMap);
     }
 }

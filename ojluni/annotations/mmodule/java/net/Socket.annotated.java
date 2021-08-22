@@ -139,7 +139,7 @@ public static synchronized void setSocketImplFactory(java.net.SocketImplFactory 
 
 public void setPerformancePreferences(int connectionTime, int latency, int bandwidth) { throw new RuntimeException("Stub!"); }
 
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@android.annotation.SystemApi(client = android.annotation.SystemApi.Client.MODULE_LIBRARIES)
 @libcore.api.IntraCoreApi
 public java.io.FileDescriptor getFileDescriptor$() { throw new RuntimeException("Stub!"); }
 }

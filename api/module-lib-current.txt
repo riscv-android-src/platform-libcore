@@ -116,38 +116,27 @@ package android.system {
 package com.android.okhttp.internalandroidapi {
 
   public final class AndroidResponseCacheAdapter {
-    ctor public AndroidResponseCacheAdapter(com.android.okhttp.internalandroidapi.HasCacheHolder.CacheHolder);
+    ctor public AndroidResponseCacheAdapter(@NonNull com.android.okhttp.internalandroidapi.HasCacheHolder.CacheHolder);
     method public void close() throws java.io.IOException;
     method public void delete() throws java.io.IOException;
     method public void flush() throws java.io.IOException;
-    method public java.net.CacheResponse get(java.net.URI, String, java.util.Map<java.lang.String,java.util.List<java.lang.String>>) throws java.io.IOException;
-    method public com.android.okhttp.internalandroidapi.HasCacheHolder.CacheHolder getCacheHolder();
+    method @Nullable public java.net.CacheResponse get(@NonNull java.net.URI, @NonNull String, @Nullable java.util.Map<java.lang.String,java.util.List<java.lang.String>>) throws java.io.IOException;
+    method @NonNull public com.android.okhttp.internalandroidapi.HasCacheHolder.CacheHolder getCacheHolder();
     method public int getHitCount();
     method public long getMaxSize();
     method public int getNetworkCount();
     method public int getRequestCount();
     method public long getSize() throws java.io.IOException;
-    method public java.net.CacheRequest put(java.net.URI, java.net.URLConnection) throws java.io.IOException;
-  }
-
-  public interface Dns {
-    method public java.util.List<java.net.InetAddress> lookup(String) throws java.net.UnknownHostException;
+    method @Nullable public java.net.CacheRequest put(@NonNull java.net.URI, @NonNull java.net.URLConnection) throws java.io.IOException;
   }
 
   public interface HasCacheHolder {
-    method public com.android.okhttp.internalandroidapi.HasCacheHolder.CacheHolder getCacheHolder();
+    method @NonNull public com.android.okhttp.internalandroidapi.HasCacheHolder.CacheHolder getCacheHolder();
   }
 
   public static final class HasCacheHolder.CacheHolder {
-    method public static com.android.okhttp.internalandroidapi.HasCacheHolder.CacheHolder create(java.io.File, long);
-    method public boolean isEquivalent(java.io.File, long);
-  }
-
-  public final class HttpURLConnectionFactory {
-    ctor public HttpURLConnectionFactory();
-    method public java.net.URLConnection openConnection(java.net.URL, javax.net.SocketFactory, java.net.Proxy) throws java.io.IOException;
-    method public void setDns(com.android.okhttp.internalandroidapi.Dns);
-    method public void setNewConnectionPool(int, long, java.util.concurrent.TimeUnit);
+    method @NonNull public static com.android.okhttp.internalandroidapi.HasCacheHolder.CacheHolder create(@NonNull java.io.File, long);
+    method public boolean isEquivalent(@NonNull java.io.File, long);
   }
 
 }
@@ -177,10 +166,10 @@ package dalvik.annotation.optimization {
 
 package dalvik.system {
 
-  public class AnnotatedStackTraceElement {
-    method public Object getBlockedOn();
-    method public Object[] getHeldLocks();
-    method public StackTraceElement getStackTraceElement();
+  public final class AnnotatedStackTraceElement {
+    method @Nullable public Object getBlockedOn();
+    method @Nullable public Object[] getHeldLocks();
+    method @NonNull public StackTraceElement getStackTraceElement();
   }
 
   public class AppSpecializationHooks {
@@ -336,7 +325,7 @@ package dalvik.system {
     method @dalvik.annotation.optimization.FastNative public Object newUnpaddedArray(Class<?>, int);
     method public void notifyStartupCompleted();
     method public void preloadDexCaches();
-    method public static void registerAppInfo(String, String[]);
+    method public static void registerAppInfo(String, String, String, String[], int);
     method public void registerNativeAllocation(long);
     method @Deprecated public void registerNativeAllocation(int);
     method public void registerNativeFree(long);
@@ -356,6 +345,9 @@ package dalvik.system {
     method public void updateProcessState(int);
     method public String vmInstructionSet();
     method public String vmLibrary();
+    field public static final int CODE_PATH_TYPE_PRIMARY_APK = 1; // 0x1
+    field public static final int CODE_PATH_TYPE_SECONDARY_DEX = 4; // 0x4
+    field public static final int CODE_PATH_TYPE_SPLIT_APK = 2; // 0x2
     field public static final int SDK_VERSION_CUR_DEVELOPMENT = 10000; // 0x2710
   }
 
@@ -368,7 +360,7 @@ package dalvik.system {
   }
 
   public final class VMStack {
-    method @dalvik.annotation.optimization.FastNative public static dalvik.system.AnnotatedStackTraceElement[] getAnnotatedThreadStackTrace(Thread);
+    method @Nullable @dalvik.annotation.optimization.FastNative public static dalvik.system.AnnotatedStackTraceElement[] getAnnotatedThreadStackTrace(Thread);
   }
 
   public final class ZygoteHooks {
@@ -400,10 +392,6 @@ package java.io {
 }
 
 package java.lang {
-
-  public final class Math {
-    method public static long randomLongInternal();
-  }
 
   public class Thread implements java.lang.Runnable {
     method public static java.lang.Thread.UncaughtExceptionHandler getUncaughtExceptionPreHandler();
@@ -508,15 +496,6 @@ package java.util {
 
 }
 
-package java.util.concurrent {
-
-  public class CompletableFuture<T> implements java.util.concurrent.CompletionStage<T> java.util.concurrent.Future<T> {
-    method public java.util.concurrent.CompletableFuture<T> completeOnTimeout(T, long, java.util.concurrent.TimeUnit);
-    method public static <U> java.util.concurrent.CompletableFuture<U> failedFuture(Throwable);
-  }
-
-}
-
 package java.util.zip {
 
   public class ZipEntry implements java.lang.Cloneable {
@@ -580,14 +559,10 @@ package libcore.io {
   }
 
   public final class IoBridge {
-    method public static void closeAndSignalBlockedThreads(java.io.FileDescriptor) throws java.io.IOException;
-    method public static java.net.InetSocketAddress getLocalInetSocketAddress(java.io.FileDescriptor) throws java.net.SocketException;
-    method public static java.io.FileDescriptor open(String, int) throws java.io.FileNotFoundException;
-    method public static int read(java.io.FileDescriptor, byte[], int, int) throws java.io.IOException;
-    method public static int recvfrom(boolean, java.io.FileDescriptor, byte[], int, int, int, java.net.DatagramPacket, boolean) throws java.io.IOException;
-    method public static int sendto(java.io.FileDescriptor, byte[], int, int, int, java.net.InetAddress, int) throws java.io.IOException;
-    method public static java.io.FileDescriptor socket(int, int, int) throws java.net.SocketException;
-    method public static void write(java.io.FileDescriptor, byte[], int, int) throws java.io.IOException;
+    method public static void closeAndSignalBlockedThreads(@NonNull java.io.FileDescriptor) throws java.io.IOException;
+    method @NonNull public static java.io.FileDescriptor open(@NonNull String, int) throws java.io.FileNotFoundException;
+    method public static int read(@NonNull java.io.FileDescriptor, @NonNull byte[], int, int) throws java.io.IOException;
+    method public static void write(@NonNull java.io.FileDescriptor, @NonNull byte[], int, int) throws java.io.IOException;
   }
 
   public final class IoUtils {
@@ -596,7 +571,6 @@ package libcore.io {
     method public static void closeQuietly(@Nullable AutoCloseable);
     method public static void closeQuietly(@Nullable java.io.FileDescriptor);
     method public static void closeQuietly(@Nullable java.net.Socket);
-    method @Deprecated public static void deleteContents(java.io.File) throws java.io.IOException;
     method @NonNull public static byte[] readFileAsByteArray(@NonNull String) throws java.io.IOException;
     method @NonNull public static String readFileAsString(@NonNull String) throws java.io.IOException;
     method public static void setBlocking(@NonNull java.io.FileDescriptor, boolean) throws java.io.IOException;
@@ -650,16 +624,17 @@ package libcore.net {
 
 package libcore.net.event {
 
-  public class NetworkEventDispatcher {
+  public final class NetworkEventDispatcher {
+    method public void dispatchNetworkConfigurationChange();
     method public static libcore.net.event.NetworkEventDispatcher getInstance();
-    method public void onNetworkConfigurationChanged();
   }
 
 }
 
 package libcore.net.http {
 
-  public interface Dns extends com.android.okhttp.internalandroidapi.Dns {
+  public interface Dns {
+    method @NonNull public java.util.List<java.net.InetAddress> lookup(@Nullable String) throws java.net.UnknownHostException;
   }
 
   public class HttpURLConnectionFactory {
@@ -674,13 +649,13 @@ package libcore.net.http {
 package libcore.util {
 
   public final class EmptyArray {
-    field public static final boolean[] BOOLEAN;
-    field public static final byte[] BYTE;
-    field public static final float[] FLOAT;
-    field public static final int[] INT;
-    field public static final long[] LONG;
-    field public static final Object[] OBJECT;
-    field public static final String[] STRING;
+    field @NonNull public static final boolean[] BOOLEAN;
+    field @NonNull public static final byte[] BYTE;
+    field @NonNull public static final float[] FLOAT;
+    field @NonNull public static final int[] INT;
+    field @NonNull public static final long[] LONG;
+    field @NonNull public static final Object[] OBJECT;
+    field @NonNull public static final String[] STRING;
   }
 
   public final class FP16 {
@@ -768,27 +743,26 @@ package org.apache.harmony.dalvik.ddmc {
 
   public abstract class ChunkHandler {
     ctor public ChunkHandler();
-    method public abstract void connected();
     method public static org.apache.harmony.dalvik.ddmc.Chunk createFailChunk(int, String);
-    method public abstract void disconnected();
-    method public static String getString(java.nio.ByteBuffer, int);
     method public abstract org.apache.harmony.dalvik.ddmc.Chunk handleChunk(org.apache.harmony.dalvik.ddmc.Chunk);
     method public static String name(int);
-    method public static void putString(java.nio.ByteBuffer, String);
+    method public abstract void onConnected();
+    method public abstract void onDisconnected();
     method public static int type(String);
     method public static java.nio.ByteBuffer wrapChunk(org.apache.harmony.dalvik.ddmc.Chunk);
     field public static final java.nio.ByteOrder CHUNK_ORDER;
   }
 
-  public class DdmServer {
+  public final class DdmServer {
     method public static void registerHandler(int, org.apache.harmony.dalvik.ddmc.ChunkHandler);
     method public static void registrationComplete();
     method public static void sendChunk(org.apache.harmony.dalvik.ddmc.Chunk);
+    method public static org.apache.harmony.dalvik.ddmc.ChunkHandler unregisterHandler(int);
   }
 
-  public class DdmVmInternal {
-    method public static void enableRecentAllocations(boolean);
-    method public static void threadNotify(boolean);
+  public final class DdmVmInternal {
+    method public static void setRecentAllocationsTrackingEnabled(boolean);
+    method public static void setThreadNotifyEnabled(boolean);
   }
 
 }

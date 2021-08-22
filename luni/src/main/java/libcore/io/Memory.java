@@ -17,13 +17,15 @@
 
 package libcore.io;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
 import android.compat.annotation.UnsupportedAppUsage;
+import android.annotation.SystemApi;
 
 import java.nio.ByteOrder;
 
 import dalvik.annotation.optimization.FastNative;
 
-import libcore.api.CorePlatformApi;
 import libcore.util.NonNull;
 
 /**
@@ -31,7 +33,7 @@ import libcore.util.NonNull;
  *
  * @hide
  */
-@CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public final class Memory {
     private Memory() { }
 
@@ -63,7 +65,7 @@ public final class Memory {
      *
      * @hide
      */
-    @CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static int peekInt(@NonNull byte[] src, int offset, @NonNull ByteOrder order) {
         if (order == ByteOrder.BIG_ENDIAN) {
             return (((src[offset++] & 0xff) << 24) |
@@ -116,7 +118,7 @@ public final class Memory {
      *
      * @hide
      */
-    @CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static short peekShort(@NonNull byte[] src, int offset, @NonNull ByteOrder order) {
         if (order == ByteOrder.BIG_ENDIAN) {
             return (short) ((src[offset] << 8) | (src[offset + 1] & 0xff));
@@ -136,7 +138,7 @@ public final class Memory {
      *
      * @hide
      */
-    @CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void pokeInt(@NonNull byte[] dst, int offset, int value, @NonNull ByteOrder order) {
         if (order == ByteOrder.BIG_ENDIAN) {
             dst[offset++] = (byte) ((value >> 24) & 0xff);
@@ -162,7 +164,7 @@ public final class Memory {
      *
      * @hide
      */
-    @CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void pokeLong(@NonNull byte[] dst, int offset, long value, @NonNull ByteOrder order) {
         if (order == ByteOrder.BIG_ENDIAN) {
             int i = (int) (value >> 32);
@@ -200,7 +202,7 @@ public final class Memory {
      *
      * @hide
      */
-    @CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void pokeShort(@NonNull byte[] dst, int offset, short value, @NonNull ByteOrder order) {
         if (order == ByteOrder.BIG_ENDIAN) {
             dst[offset++] = (byte) ((value >> 8) & 0xff);
@@ -230,7 +232,7 @@ public final class Memory {
      *
      * @hide make type-safe before making public?
      */
-    @CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native void memmove(@NonNull Object dstObject, int dstOffset, @NonNull Object srcObject, int srcOffset, long byteCount);
 
     /**
