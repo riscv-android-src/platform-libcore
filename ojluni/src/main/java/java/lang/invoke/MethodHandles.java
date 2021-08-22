@@ -680,7 +680,8 @@ public class MethodHandles {
             // Android-changed: The bootstrap classloader isn't null.
             if (allowedModes == ALL_MODES &&
                     lookupClass.getClassLoader() == Object.class.getClassLoader()) {
-                if (name.startsWith("java.") ||
+                if ((name.startsWith("java.")
+                            && !name.startsWith("java.util.concurrent.atomic.Atomic")) ||
                         (name.startsWith("sun.")
                                 && !name.startsWith("sun.invoke.")
                                 && !name.equals("sun.reflect.ReflectionFactory"))) {
@@ -1330,7 +1331,6 @@ assertEquals(""+l, (String) MH_this.invokeExact(subl)); // Listie method
          *                              <a href="MethodHandles.Lookup.html#secmgr">refuses access</a>
          * @throws NullPointerException if any argument is null
          * @since 9
-         * @hide
          */
         public VarHandle findVarHandle(Class<?> recv, String name, Class<?> type) throws NoSuchFieldException, IllegalAccessException {
             final Field field = findFieldOfType(recv, name, type);
@@ -1498,14 +1498,13 @@ assertEquals(""+l, (String) MH_this.invokeExact(subl)); // Listie method
          *                              <a href="MethodHandles.Lookup.html#secmgr">refuses access</a>
          * @throws NullPointerException if any argument is null
          * @since 9
-         * @hide
          */
         public VarHandle findStaticVarHandle(Class<?> decl, String name, Class<?> type) throws NoSuchFieldException, IllegalAccessException {
             final Field field = findFieldOfType(decl, name, type);
             final boolean isStatic = true;
             final boolean performAccessChecks = true;
             commonFieldChecks(field, decl, type, isStatic, performAccessChecks);
-            return FieldVarHandle.create(field);
+            return StaticFieldVarHandle.create(field);
         }
         // END Android-changed: OpenJDK 9+181 VarHandle API factory method.
 
@@ -1822,13 +1821,12 @@ return mh1;
          * @throws IllegalAccessException if access checking fails
          * @throws NullPointerException if the argument is null
          * @since 9
-         * @hide
          */
         public VarHandle unreflectVarHandle(Field f) throws IllegalAccessException {
             final boolean isStatic = Modifier.isStatic(f.getModifiers());
             final boolean performAccessChecks = true;
             commonFieldChecks(f, f.getDeclaringClass(), f.getType(), isStatic, performAccessChecks);
-            return FieldVarHandle.create(f);
+            return isStatic ? StaticFieldVarHandle.create(f) : FieldVarHandle.create(f);
         }
         // END Android-changed: OpenJDK 9+181 VarHandle API factory method.
 
@@ -2148,7 +2146,6 @@ return mh1;
      * @throws NullPointerException if the arrayClass is null
      * @throws IllegalArgumentException if arrayClass is not an array type
      * @since 9
-     * @hide
      */
     public static
     VarHandle arrayElementVarHandle(Class<?> arrayClass) throws IllegalArgumentException {
@@ -2231,7 +2228,6 @@ return mh1;
      * @throws UnsupportedOperationException if the component type of
      * viewArrayClass is not supported as a variable type
      * @since 9
-     * @hide
      */
     public static
     VarHandle byteArrayViewVarHandle(Class<?> viewArrayClass,
@@ -2320,7 +2316,6 @@ return mh1;
      * @throws UnsupportedOperationException if the component type of
      * viewArrayClass is not supported as a variable type
      * @since 9
-     * @hide
      */
     public static
     VarHandle byteBufferViewVarHandle(Class<?> viewArrayClass,
@@ -2500,7 +2495,6 @@ return invoker;
      * @return a method handle suitable for invoking an access mode method of
      *         any VarHandle whose access mode type is of the given type.
      * @since 9
-     * @hide
      */
     static public
     MethodHandle varHandleExactInvoker(VarHandle.AccessMode accessMode, MethodType type) {
@@ -2530,7 +2524,6 @@ return invoker;
      *         any VarHandle whose access mode type is convertible to the given
      *         type.
      * @since 9
-     * @hide
      */
     static public
     MethodHandle varHandleInvoker(VarHandle.AccessMode accessMode, MethodType type) {

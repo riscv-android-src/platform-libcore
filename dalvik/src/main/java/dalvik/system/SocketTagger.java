@@ -16,6 +16,9 @@
 
 package dalvik.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
 import android.compat.annotation.UnsupportedAppUsage;
 import java.io.FileDescriptor;
 import java.net.DatagramSocket;
@@ -27,7 +30,7 @@ import java.net.SocketException;
  *
  * @hide
  */
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public abstract class SocketTagger {
 
     private static SocketTagger tagger = new SocketTagger() {
@@ -35,7 +38,11 @@ public abstract class SocketTagger {
         @Override public void untag(FileDescriptor socketDescriptor) throws SocketException {}
     };
 
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    /**
+     *
+     * @hide
+     */
+    @SystemApi(client = MODULE_LIBRARIES)
     public SocketTagger() {
     }
 
@@ -46,8 +53,10 @@ public abstract class SocketTagger {
      *
      * @param socketDescriptor to be assigned to the current thread
      * @throws SocketException when {@link SocketException} occurs
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public abstract void tag(FileDescriptor socketDescriptor) throws SocketException;
 
     /**
@@ -60,8 +69,10 @@ public abstract class SocketTagger {
      *
      * @param socketDescriptor to be released from the current thread to a connection pool
      * @throws SocketException when {@link SocketException} occurs
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public abstract void untag(FileDescriptor socketDescriptor) throws SocketException;
 
     /**
@@ -71,9 +82,11 @@ public abstract class SocketTagger {
      *
      * @param socket to be assigned to the current thread
      * @throws SocketException when {@link SocketException} occurs
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public final void tag(Socket socket) throws SocketException {
         if (!socket.isClosed()) {
             tag(socket.getFileDescriptor$());
@@ -91,9 +104,11 @@ public abstract class SocketTagger {
      * @param socket           to be released from the current thread
      *                         to a connection pool
      * @throws SocketException when {@link SocketException} occurs
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public final void untag(Socket socket) throws SocketException {
         if (!socket.isClosed()) {
             untag(socket.getFileDescriptor$());
@@ -107,8 +122,10 @@ public abstract class SocketTagger {
      *
      * @param socket           to be assigned to the current thread
      * @throws SocketException when {@link SocketException} occurs
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public final void tag(DatagramSocket socket) throws SocketException {
         if (!socket.isClosed()) {
             tag(socket.getFileDescriptor$());
@@ -126,8 +143,10 @@ public abstract class SocketTagger {
      * @param socket           to be released from the current thread
      *                         to a connection pool
      * @throws SocketException when {@link SocketException} occurs
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public final void untag(DatagramSocket socket) throws SocketException {
         if (!socket.isClosed()) {
             untag(socket.getFileDescriptor$());
@@ -138,8 +157,10 @@ public abstract class SocketTagger {
      * Sets this process' socket tagger to {@code tagger}.
      *
      * @param tagger socket tagger to be assigned to this process
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static synchronized void set(SocketTagger tagger) {
         if (tagger == null) {
             throw new NullPointerException("tagger == null");
@@ -151,9 +172,11 @@ public abstract class SocketTagger {
      * Returns this process socket tagger.
      *
      * @return {@link SocketTagger} assigned to this process
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static synchronized SocketTagger get() {
         return tagger;
     }

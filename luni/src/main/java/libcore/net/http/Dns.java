@@ -16,7 +16,9 @@
 
 package libcore.net.http;
 
-import libcore.api.CorePlatformApi;
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -28,14 +30,16 @@ import libcore.util.Nullable;
  * A domain name service that resolves IP addresses for host names.
  * @hide
  */
-@CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public interface Dns extends com.android.okhttp.internalandroidapi.Dns {
     /**
      * Returns the IP addresses of {@code hostname}, in the order they should
      * be attempted. Returns loopback addresses for {@code null} host.
      *
      * @param hostname The host name will be looked up.
+     *
+     * @hide
      */
-    @CorePlatformApi(status = CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     @NonNull List<@NonNull InetAddress> lookup(@Nullable String hostname) throws UnknownHostException;
 }

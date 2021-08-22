@@ -16,6 +16,9 @@
 
 package dalvik.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
 import android.compat.annotation.UnsupportedAppUsage;
 
 import java.io.FileDescriptor;
@@ -34,13 +37,15 @@ import dalvik.annotation.optimization.FastNative;
  *
  * @hide
  */
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public final class VMDebug {
     /**
      * flag for startMethodTracing(), which adds the results from
      * startAllocCounting to the trace key file.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     // Must match android.os.Debug.TRACE_COUNT_ALLOCS.
     public static final int TRACE_COUNT_ALLOCS = 1;
 
@@ -60,87 +65,109 @@ public final class VMDebug {
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the number of all allocated objects.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_GLOBAL_ALLOCATED_OBJECTS =
         KIND_ALLOCATED_OBJECTS;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the cumulative size of all objects allocated.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_GLOBAL_ALLOCATED_BYTES =
         KIND_ALLOCATED_BYTES;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the number of freed objects.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_GLOBAL_FREED_OBJECTS =
         KIND_FREED_OBJECTS;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the cumulative size of all freed objects.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_GLOBAL_FREED_BYTES =
         KIND_FREED_BYTES;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the number of times an allocation triggered a blocking GC.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_GLOBAL_GC_INVOCATIONS =
         KIND_GC_INVOCATIONS;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the number of initialized classes.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_GLOBAL_CLASS_INIT_COUNT =
         KIND_CLASS_INIT_COUNT;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the cumulative time spent in class initialization.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_GLOBAL_CLASS_INIT_TIME =
         KIND_CLASS_INIT_TIME;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the number of all allocated objects for current thread.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_THREAD_ALLOCATED_OBJECTS =
         KIND_ALLOCATED_OBJECTS << 16;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the cumulative size of all objects allocated for current thread.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_THREAD_ALLOCATED_BYTES =
         KIND_ALLOCATED_BYTES << 16;
 
     /**
      * Constant for {@link #getAllocCount(int)}
      * to get the number of times an allocation triggered a blocking GC for current thread.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_THREAD_GC_INVOCATIONS =
         KIND_GC_INVOCATIONS << 16;
 
     /**
      * Constant for {@link #getAllocCount(int)} to get all possible stats.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static final int KIND_ALL_COUNTS = 0xffffffff;
 
     /* all methods are static */
@@ -150,8 +177,10 @@ public final class VMDebug {
      * Returns the time since the last known debugger activity.
      *
      * @return the time in milliseconds, or -1 if the debugger is not connected
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     @FastNative
     public static native long lastDebuggerActivity();
 
@@ -160,8 +189,10 @@ public final class VMDebug {
      * enabled, a debugger cannot be attached.
      *
      * @return true if debugging is enabled
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     @FastNative
     public static native boolean isDebuggingEnabled();
 
@@ -169,9 +200,11 @@ public final class VMDebug {
      * Determines if a debugger is currently attached.
      *
      * @return true if (and only if) a debugger is connected
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     @FastNative
     public static native boolean isDebuggerConnected();
 
@@ -181,8 +214,10 @@ public final class VMDebug {
      * perform.
      *
      * @return array of strings identifying VM features
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native String[] getVmFeatureList();
 
     /**
@@ -206,8 +241,10 @@ public final class VMDebug {
      *                        method instrumentation is used.
      * @param intervalUs      the time between samples in microseconds when
      *                        sampling is enabled.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void startMethodTracing(String traceFileName, int bufferSize, int flags, boolean samplingEnabled, int intervalUs) {
         startMethodTracingFilename(traceFileName, checkBufferSize(bufferSize), flags, samplingEnabled, intervalUs);
     }
@@ -230,8 +267,10 @@ public final class VMDebug {
      *                        sampling is enabled.
      * @param streamingOutput streams tracing data to the duped {@code fd} file descriptor
      *                        if {@code streamingOutput} is {@code true}.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void startMethodTracing(String traceFileName, FileDescriptor fd, int bufferSize,
                                           int flags, boolean samplingEnabled, int intervalUs,
                                           boolean streamingOutput) {
@@ -255,8 +294,10 @@ public final class VMDebug {
      *                        method instrumentation is used.
      * @param intervalUs      the time between samples in microseconds when
      *                        sampling is enabled.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void startMethodTracingDdms(int bufferSize, int flags, boolean samplingEnabled, int intervalUs) {
         startMethodTracingDdmsImpl(checkBufferSize(bufferSize), flags, samplingEnabled, intervalUs);
     }
@@ -280,14 +321,18 @@ public final class VMDebug {
     /**
      * Determine whether method tracing is currently active and what type is
      * active.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native int getMethodTracingMode();
 
     /**
      * Stops method tracing.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native void stopMethodTracing();
 
     /**
@@ -301,21 +346,27 @@ public final class VMDebug {
      *
      * @return the CPU usage. A value of -1 means the system does not support
      *         this feature.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     @FastNative
     public static native long threadCpuTimeNanos();
 
     /**
      * Starts counting the number and aggregate size of memory allocations.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native void startAllocCounting();
 
     /**
      * Stops counting the number and aggregate size of memory allocations.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native void stopAllocCounting();
 
     /**
@@ -323,21 +374,27 @@ public final class VMDebug {
      * {@link #startAllocCounting() start} and {@link #stopAllocCounting() stop}.
      *
      * @param kind either {@code KIND_GLOBAL_*} or {@code KIND_THREAD_*}.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native int getAllocCount(int kind);
 
     /**
      * Resets counting the number and aggregate size of memory allocations for the given kinds.
      *
      * @param kinds a union of {@code KIND_GLOBAL_*} and {@code KIND_THREAD_*}.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native void resetAllocCount(int kinds);
 
     /**
      * This method exists for binary compatibility.  It was part of
      * the allocation limits API which was removed in Android 3.0 (Honeycomb).
+     *
+     * @hide
      */
     @Deprecated
     public static int setAllocationLimit(int limit) {
@@ -347,6 +404,8 @@ public final class VMDebug {
     /**
      * This method exists for binary compatibility.  It was part of
      * the allocation limits API which was removed in Android 3.0 (Honeycomb).
+     *
+     * @hide
      */
     @Deprecated
     public static int setGlobalAllocationLimit(int limit) {
@@ -355,13 +414,30 @@ public final class VMDebug {
 
     /**
      * Count the number of instructions executed between two points.
+     *
+     * @hide
      */
     @Deprecated
     public static void startInstructionCounting() {}
+
+    /**
+     *
+     * @hide
+     */
     @Deprecated
     public static void stopInstructionCounting() {}
+
+    /**
+     *
+     * @hide
+     */
     @Deprecated
     public static void getInstructionCount(int[] counts) {}
+
+    /**
+     *
+     * @hide
+     */
     @Deprecated
     public static void resetInstructionCount() {}
 
@@ -370,8 +446,10 @@ public final class VMDebug {
      *
      * @param flags a union of {@link android.os.Debug.SHOW_FULL_DETAIL},
      *    {@link android.os.Debug.SHOW_CLASSLOADER}, and {@link android.os.Debug.SHOW_INITIALIZED}.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     @FastNative
     public static native void printLoadedClasses(int flags);
 
@@ -379,8 +457,10 @@ public final class VMDebug {
      * Gets the number of loaded classes.
      *
      * @return the number of loaded classes
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     @FastNative
     public static native int getLoadedClassCount();
 
@@ -393,8 +473,10 @@ public final class VMDebug {
      * @throws UnsupportedOperationException if the VM was built without
      *         HPROF support.
      * @throws IOException if an error occurs while opening or writing files.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void dumpHprofData(String filename) throws IOException {
         if (filename == null) {
             throw new NullPointerException("filename == null");
@@ -407,8 +489,10 @@ public final class VMDebug {
      *
      * @throws UnsupportedOperationException if the VM was built without
      *         HPROF support.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native void dumpHprofDataDdms();
 
     /**
@@ -419,8 +503,10 @@ public final class VMDebug {
      * @param fd Descriptor of open file that will receive the output.
      *        If this is null, the fileName is used instead.
      * @throws {@link IOException} if an error occurs while opening or writing files.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void dumpHprofData(String fileName, FileDescriptor fd)
             throws IOException {
        dumpHprofData(fileName, fd != null ? fd.getInt$() : -1);
@@ -432,9 +518,11 @@ public final class VMDebug {
     /**
      * Dumps the contents of the VM reference tables (e.g. JNI locals and
      * globals) to the log file.
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native void dumpReferenceTables();
 
     /**
@@ -448,8 +536,10 @@ public final class VMDebug {
      *                   is counted. If false, only instances whose class is
      *                   equal to {@code klass} are counted.
      * @return the number of matching instances.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native long countInstancesOfClass(Class klass, boolean assignable);
 
     /**
@@ -465,8 +555,10 @@ public final class VMDebug {
      * @return an array containing the number of matching instances. The value
      *         for index {@code i} is the number of instances of
      *         the class {@code classes[i]}
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native long[] countInstancesOfClasses(Class[] classes, boolean assignable);
 
     /**
@@ -482,6 +574,8 @@ public final class VMDebug {
      * @return an array containing the list of matching instances. The value
      *         for index {@code i} is an array containing the instances
      *         of the class {@code classes[i]}
+     *
+     * @hide
      */
     public static native Object[][] getInstancesOfClasses(Class[] classes, boolean assignable);
 
@@ -508,8 +602,10 @@ public final class VMDebug {
      * @param statName the name of the runtime statistic to look up.
      *
      * @return the value of the runtime statistic.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static String getRuntimeStat(String statName) {
         if (statName == null) {
             throw new NullPointerException("statName == null");
@@ -526,8 +622,10 @@ public final class VMDebug {
      * that {@link #getRuntimeStat()} supports.
      *
      * @return a map of the names/values of the supported runtime statistics.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static Map<String, String> getRuntimeStats() {
         HashMap<String, String> map = new HashMap<>();
         String[] values = getRuntimeStatsInternal();
@@ -549,8 +647,10 @@ public final class VMDebug {
      * @param classLoader The classloader to use as a loading context.
      *
      * @throws IOException if an error occurs while opening {@code agent} file.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void attachAgent(String agent, ClassLoader classLoader) throws IOException {
         nativeAttachAgent(agent, classLoader);
     }
@@ -567,6 +667,8 @@ public final class VMDebug {
      * inherited from a superclass or an implemented interface.
      *
      * @param klass The class whose methods should be exempted.
+     *
+     * @hide
      */
     @UnsupportedAppUsage
     public static native void allowHiddenApiReflectionFrom(Class<?> klass);
@@ -575,7 +677,9 @@ public final class VMDebug {
      * Sets the number of frames recorded for allocation tracking.
      *
      * @param stackDepth The number of frames captured for each stack trace.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static native void setAllocTrackerStackDepth(int stackDepth);
 }

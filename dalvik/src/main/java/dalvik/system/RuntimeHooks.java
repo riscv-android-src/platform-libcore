@@ -16,6 +16,10 @@
 
 package dalvik.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
+
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.function.Supplier;
@@ -32,7 +36,7 @@ import libcore.util.Nullable;
  *
  * @hide
  */
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public final class RuntimeHooks {
 
     private static Supplier<String> zoneIdSupplier;
@@ -52,8 +56,10 @@ public final class RuntimeHooks {
      * <p>Once set the supplier cannot be changed.
      *
      * @param zoneIdSupplier new {@link Supplier} of the time zone ID
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void setTimeZoneIdSupplier(@NonNull Supplier<String> zoneIdSupplier) {
         if (RuntimeHooks.zoneIdSupplier != null) {
             throw new UnsupportedOperationException("zoneIdSupplier instance already set");
@@ -64,6 +70,8 @@ public final class RuntimeHooks {
 
     /**
      * Returns the {@link Supplier} that should be used to discover the time zone.
+     *
+     * @hide
      */
     public static Supplier<String> getTimeZoneIdSupplier() {
         return RuntimeHooks.zoneIdSupplier;
@@ -77,8 +85,10 @@ public final class RuntimeHooks {
      * {@link Thread#dispatchUncaughtException(Throwable)}.
      *
      * @param uncaughtExceptionHandler handler for uncaught exceptions
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void setUncaughtExceptionPreHandler(
             @Nullable Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         Thread.setUncaughtExceptionPreHandler(uncaughtExceptionHandler);

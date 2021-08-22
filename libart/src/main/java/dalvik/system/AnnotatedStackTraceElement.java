@@ -16,6 +16,12 @@
 
 package dalvik.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
+import libcore.util.NonNull;
+import libcore.util.Nullable;
+
 /**
  * A class encapsulating a StackTraceElement and lock state. This adds
  * critical thread state to the standard stack trace information, which
@@ -23,8 +29,8 @@ package dalvik.system;
  *
  * @hide
  */
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-public class AnnotatedStackTraceElement {
+@SystemApi(client = MODULE_LIBRARIES)
+public final class AnnotatedStackTraceElement {
     /**
      * The traditional StackTraceElement describing the Java stack frame.
      */
@@ -50,9 +56,11 @@ public class AnnotatedStackTraceElement {
      * Returns the {@link StackTraceElement} describing the Java stack frame.
      *
      * @return {@link StackTraceElement} describing the Java stack frame.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public StackTraceElement getStackTraceElement() {
+    @SystemApi(client = MODULE_LIBRARIES)
+    @NonNull public StackTraceElement getStackTraceElement() {
         return stackTraceElement;
     }
 
@@ -61,9 +69,11 @@ public class AnnotatedStackTraceElement {
      * May be {@code null}.
      *
      * @return array of objects current frame is syncronized on.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public Object[] getHeldLocks() {
+    @SystemApi(client = MODULE_LIBRARIES)
+    @Nullable public Object[] getHeldLocks() {
         return heldLocks;
     }
 
@@ -73,9 +83,11 @@ public class AnnotatedStackTraceElement {
      *
      * @return object this thread is waiting to lock, or waiting on, if any,
      *         or {@code null}, if none.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
-    public Object getBlockedOn() {
+    @SystemApi(client = MODULE_LIBRARIES)
+    @Nullable public Object getBlockedOn() {
         return blockedOn;
     }
 }

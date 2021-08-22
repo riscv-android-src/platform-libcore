@@ -32,12 +32,14 @@
 
 package sun.security.pkcs;
 
+@android.annotation.SystemApi(client = android.annotation.SystemApi.Client.MODULE_LIBRARIES)
 @libcore.api.Hide
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
 @SuppressWarnings({"unchecked", "deprecation", "all"})
 public class ParsingException extends java.io.IOException {
 
+@libcore.api.Hide
 public ParsingException() { throw new RuntimeException("Stub!"); }
 
+@libcore.api.Hide
 public ParsingException(java.lang.String s) { throw new RuntimeException("Stub!"); }
 }

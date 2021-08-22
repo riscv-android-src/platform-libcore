@@ -16,6 +16,10 @@
 
 package android.system;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
+
 import libcore.util.Objects;
 
 /**
@@ -26,7 +30,7 @@ import libcore.util.Objects;
  * Capabilities defined in <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities(7)</a>
  * @hide
  */
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public final class StructCapUserHeader {
     /**
      * Version of the header. Note this is not final as capget() may mutate the field when an
@@ -35,10 +39,16 @@ public final class StructCapUserHeader {
      * See <a href="http://man7.org/linux/man-pages/man2/capget.2.html">capget(2)</a>.
      *
      * @see {@link OsConstants._LINUX_CAPABILITY_VERSION_3}.
+     *
+     * @hide
      */
     public int version; /* __u32 */
 
-    /** Pid of the header. The pid a call applies to. */
+    /**
+     * Pid of the header. The pid a call applies to.
+     *
+     * @hide
+     */
     public final int pid;
 
     /**
@@ -46,13 +56,18 @@ public final class StructCapUserHeader {
      *
      * @param version linux capability version
      * @param pid     process id
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public StructCapUserHeader(int version, int pid) {
         this.version = version;
         this.pid = pid;
     }
 
+    /**
+     * @hide
+     */
     @Override public String toString() {
         return Objects.toString(this);
     }

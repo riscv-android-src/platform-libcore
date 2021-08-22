@@ -16,6 +16,9 @@
 
 package libcore.io;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
 import android.compat.annotation.UnsupportedAppUsage;
 
 import java.io.ByteArrayOutputStream;
@@ -35,7 +38,7 @@ import libcore.util.Nullable;
  *
  * @hide
  */
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public final class Streams {
     private static AtomicReference<byte[]> skipBuffer = new AtomicReference<byte[]>();
 
@@ -49,9 +52,11 @@ public final class Streams {
      * @param in {@link InputStream} to read byte from
      * @return singlge byte read from {@code in}
      * @throws IOException in case of I/O error
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static int readSingleByte(@NonNull InputStream in) throws IOException {
         byte[] buffer = new byte[1];
         int result = in.read(buffer, 0, 1);
@@ -66,9 +71,11 @@ public final class Streams {
      * @param out {@link OutputStream} to write byte to
      * @param b byte to write to stream {@code out}
      * @throws IOException in case of I/O error
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void writeSingleByte(@NonNull OutputStream out, int b) throws IOException {
         byte[] buffer = new byte[1];
         buffer[0] = (byte) (b & 0xff);
@@ -82,9 +89,11 @@ public final class Streams {
      * @param in {@link InputStream} to read data from
      * @param dst byte buffer to write data to
      * @throws IOException in case of I/O error
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static void readFully(@NonNull InputStream in, @NonNull byte[] dst) throws IOException {
         readFully(in, dst, 0, dst.length);
     }
@@ -94,6 +103,8 @@ public final class Streams {
      * EOFException if insufficient bytes are available.
      *
      * Used to implement {@link java.io.DataInputStream#readFully(byte[], int, int)}.
+     *
+     * @hide
      */
     public static void readFully(InputStream in, byte[] dst, int offset, int byteCount) throws IOException {
         if (byteCount == 0) {
@@ -123,9 +134,11 @@ public final class Streams {
      * @param in {@link InputStream} to read data from
      * @return remaining bytes in {@code in} stream.
      * @throws IOException thrown by {@link InputStream#read(byte[])}.
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static @NonNull byte[] readFully(@NonNull InputStream in) throws IOException {
         try {
             return readFullyNoClose(in);
@@ -141,8 +154,10 @@ public final class Streams {
      * @param in {@link InputStream} to read data from
      * @return remaining bytes in {@code in} stream.
      * @throws IOException thrown by {@link InputStream#read(byte[])}.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static @NonNull byte[] readFullyNoClose(@NonNull InputStream in) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
@@ -159,8 +174,10 @@ public final class Streams {
      * @param reader {@link Reader} instance.
      * @return remainder of {@code reader} as {@link String}.
      * @throws IOException thrown by {@link Reader#read(java.nio.CharBuffer)}.
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static @NonNull String readFully(@NonNull Reader reader) throws IOException {
         try {
             StringWriter writer = new StringWriter();
@@ -175,6 +192,9 @@ public final class Streams {
         }
     }
 
+    /**
+     * @hide
+     */
     @UnsupportedAppUsage
     public static void skipAll(InputStream in) throws IOException {
         do {
@@ -198,8 +218,10 @@ public final class Streams {
      * @param byteCount number of bytes to skip from {@code in}
      * @return number of bytes skipped from {@code in}
      * @throws IOException in case of I/O error
+     *
+     * @hide
      */
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static long skipByReading(@NonNull InputStream in, long byteCount) throws IOException {
         // acquire the shared skip buffer.
         byte[] buffer = skipBuffer.getAndSet(null);
@@ -234,9 +256,11 @@ public final class Streams {
      * @param out {@link InputStream} to write copied data to
      * @return the total number of bytes transferred.
      * @throws IOException reading from {@link InputStream} or writing to {@link OutputStream}.
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static int copy(@NonNull InputStream in, @NonNull OutputStream out) throws IOException {
         int total = 0;
         byte[] buffer = new byte[8192];
@@ -254,6 +278,8 @@ public final class Streams {
      *
      * @throws java.io.EOFException if the stream is exhausted before the next newline
      *     character.
+     *
+     * @hide
      */
     @UnsupportedAppUsage
     public static String readAsciiLine(InputStream in) throws IOException {

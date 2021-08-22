@@ -16,6 +16,10 @@
 
 package java.nio;
 
+import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
+
+import android.annotation.SystemApi;
+
 import android.compat.annotation.UnsupportedAppUsage;
 
 /**
@@ -24,8 +28,10 @@ import android.compat.annotation.UnsupportedAppUsage;
  * @hide
  */
 // @VisibleForTesting : was default
-@libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+@SystemApi(client = MODULE_LIBRARIES)
 public final class NIOAccess {
+
+    private NIOAccess() {}
 
     /**
      * Returns the underlying native pointer to the data of the given
@@ -49,9 +55,11 @@ public final class NIOAccess {
      *
      * @param b  {@code Buffer} to get its underlying data array
      * @return   underlying Java array
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static Object getBaseArray(Buffer b) {
         return b.hasArray() ? b.array() : null;
     }
@@ -65,9 +73,11 @@ public final class NIOAccess {
      *
      * @param b {@code Buffer} to get its underlying data array's base offset
      * @return  underlying Java array's base offset
+     *
+     * @hide
      */
     @UnsupportedAppUsage
-    @libcore.api.CorePlatformApi(status = libcore.api.CorePlatformApi.Status.STABLE)
+    @SystemApi(client = MODULE_LIBRARIES)
     public static int getBaseArrayOffset(Buffer b) {
         return b.hasArray() ? ((b.arrayOffset() + b.position) << b._elementSizeShift) : 0;
     }
